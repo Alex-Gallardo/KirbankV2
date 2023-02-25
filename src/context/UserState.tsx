@@ -1,13 +1,11 @@
-import { useReducer } from "react";
+// TYPES
+import { ACTUALIZAR_RED, ACTUALIZAR_TOTAL, CANTIDAD_NFT, SELECCIONAR_NFT, SELECCIONAR_USUARIO } from "../types";
 
 // CONTEXT
 import UserContext from "./UserContext";
-
 // REDUCER
 import UserReducer from "./UserReducer";
-
-// TYPES
-import { SELECCIONAR_USUARIO, SELECCIONAR_NFT, CANTIDAD_NFT, ACTUALIZAR_TOTAL, ACTUALIZAR_RED } from "../types/index";
+import { useReducer } from "react";
 
 const UserState = ({ children }: any) => {
 	// State inicila
@@ -22,6 +20,7 @@ const UserState = ({ children }: any) => {
 
 	// Modifica el usuario
 	const agregarUsuario = (user: any) => {
+		console.log("Actualizar usuario", user);
 		dispatch({
 			type: SELECCIONAR_USUARIO,
 			payload: user
@@ -64,11 +63,12 @@ const UserState = ({ children }: any) => {
 		});
 	};
 
-	// ACtualizar red
-	const actualizarRed = (state: boolean) => {
+	// Actualizar red
+	const actualizarRed = (indi: any) => {
+		console.log("Actualizar red", indi);
 		dispatch({
 			type: ACTUALIZAR_RED,
-			payload: state
+			payload: indi
 		});
 	};
 
