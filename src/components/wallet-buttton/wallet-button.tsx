@@ -1,11 +1,83 @@
+import { Button, Icon, Text, useToast } from "@chakra-ui/react";
+import { useContext, useEffect, useMemo, useState } from "react";
+
 import UserContext from "@/context/UserContext";
-import { Button, Icon, Text } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { ethers } from "ethers";
+import { useRouter } from "next/router";
 
-const WalletButton = ({ props }: any) => {
+const WalletButton = ({ ...props }: any) => {
+	// STATE
 	const [text, setText] = useState("Connect your wallet");
+	const router = useRouter();
+	const toast = useToast();
 
-	console.log("wallet", "./images/wallet.svg");
+	// CONTEXT
+	const userContext = useContext(UserContext);
+	const { usuario, agregarUsuario, actualizarRed } = userContext;
+
+	useEffect(() => {
+		if (usuario.length > 0) {
+			let addressWallet: string = `${usuario.substr(0, 6)}...${usuario.substr(-4)}`;
+			setText(addressWallet);
+		} else router.pathname != "/login" ? router.replace("/login") : "";
+	}, []);
+
+	// Truncar (acortar) la dirección de la wallet
+	const useTruncatedAddress = (account: any) => {
+		const truncated = useMemo(() => `${account?.substr(0, 6)}...${account?.substr(-4)}`, [account]);
+		return truncated;
+	};
+
+	// Funcion para conectar Metamask
+	const connectMetamask = async () => {
+		try {
+			const { ethereum }: any = window;
+			if (!ethereum) {
+				toast({
+					title: "Conecta Metamask.",
+					description: "Crea una wallet para conectarte con nosotros",
+					status: "error",
+					duration: 2000,
+					isClosable: true,
+					variant: "left-accent",
+					position: "top"
+				});
+				return;
+			}
+
+			// eth_requestAccounts: Solicita las cuentas Metamask
+			const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+			const provider = new ethers.providers.Web3Provider(ethereum);
+			const signer = provider.getSigner();
+			// console.log("Signer", signer);
+			agregarUsuario(accounts[0]);
+			let addressWallet: string = `${accounts[0]?.substr(0, 6)}...${accounts[0]?.substr(-4)}`;
+			setText(addressWallet);
+			console.log("Account -wallet", addressWallet);
+
+			// Establecimiento de red
+			// RED ESTABLECIDA
+			if (ethereum.networkVersion == 5) {
+				actualizarRed(true);
+			} else {
+				actualizarRed(false);
+			}
+
+			// Redirect to
+			if (router.pathname == "/login") router.push("/");
+		} catch (err: any) {
+			console.error("Ha ocurrido un error", err);
+			toast({
+				title: "Ha ocurrido un error",
+				description: err,
+				status: "error",
+				duration: 2000,
+				isClosable: true,
+				variant: "solid",
+				position: "bottom"
+			});
+		}
+	};
 
 	let icon: any = (
 		<Icon viewBox="0 0 200 200">
@@ -26,32 +98,11 @@ const WalletButton = ({ props }: any) => {
 		</Icon>
 	);
 
-	// CONTEXT
-	const userContext = useContext(UserContext);
-	const { usuario, agregarUsuario } = userContext;
-	console.log("ctx:", userContext);
-
-	// Funcion para conectar Metamask
-	const connectMetamask = async () => {
-		try {
-			const { ethereum }: any = window;
-			if (!ethereum) {
-				alert("Conecta Metamask");
-				return;
-			}
-
-			// eth_requestAccounts: Solicita las cuentas Metamask
-			const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-			console.log("cuenta seteada:", accounts[0]);
-			agregarUsuario(accounts[0]);
-			setText(accounts[0]);
-		} catch (err) {
-			console.log("Ha ocurrido un error", err);
-		}
-	};
 	return (
-		<Button leftIcon={icon} onClick={connectMetamask} maxW="200px" {...props}>
-			<Text noOfLines={1}>{text}</Text>
+		<Button rightIcon={icon} onClick={connectMetamask} background="#DBF227" {...props}>
+			<Text noOfLines={1} fontSize={{ base: "sm", lg: "md" }}>
+				{text}
+			</Text>
 		</Button>
 	);
 };

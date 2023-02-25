@@ -1,5 +1,7 @@
-import { Box, Button, Heading, VStack, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, Stack, Text, VStack } from "@chakra-ui/react";
+
 import Link from "next/link";
+import WalletButton from "@/components/wallet-buttton/wallet-button";
 
 const LoginIndex = () => {
 	return (
@@ -14,9 +16,10 @@ const LoginIndex = () => {
 					Join us and become part of the excitement of creating a unique and valuable NFT! We mint an NFT with an exclusive design and an opportunity to generate recurring income.
 					Don't miss this opportunity to own a unique and valuable digital asset! Secure your NFT now!
 				</Text>
-				<Button background="#DBF227">
+				<WalletButton></WalletButton>
+				{/* <Button background="#DBF227">
 					<Link href="/">Connect your wallet</Link>
-				</Button>
+				</Button> */}
 			</VStack>
 		</Stack>
 	);

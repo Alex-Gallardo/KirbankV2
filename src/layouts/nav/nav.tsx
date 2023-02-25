@@ -1,30 +1,31 @@
-import { HamburgerIcon, WarningIcon } from "@chakra-ui/icons";
+import * as React from "react";
+
 import {
 	Box,
+	Button,
 	Container,
-	Divider,
+	Drawer,
+	DrawerBody,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerOverlay,
 	Flex,
 	Heading,
-	SimpleGrid,
-	Spacer,
-	Stack,
-	Button,
 	IconButton,
-	Drawer,
-	DrawerOverlay,
-	DrawerContent,
-	DrawerCloseButton,
-	DrawerHeader,
-	DrawerBody,
-	DrawerFooter
+	Spacer,
+	Stack
 } from "@chakra-ui/react";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import * as React from "react";
-import { useState, useEffect } from "react";
+import { CopyIcon, EditIcon, HamburgerIcon, StarIcon, WarningIcon } from "@chakra-ui/icons";
+import { useEffect, useState } from "react";
+
 import Footer from "../footer/footer";
+import Head from "next/head";
 import Header from "../header/header";
+import Link from "next/link";
+import WalletButton from "@/components/wallet-buttton/wallet-button";
+import { useRouter } from "next/router";
 
 export default function Nav({ children }: any) {
 	const [isDrawer, setDrawer] = useState(false);
@@ -51,22 +52,22 @@ export default function Nav({ children }: any) {
 						<Heading display={{ base: "none", lg: "flex" }}>Kirbank</Heading>
 						<Heading display={{ base: "flex", lg: "none" }}>K</Heading>
 						{/* RUTAS */}
-						<Stack spacing={6} display={{ base: "none", lg: "flex" }}>
-							<Button colorScheme="teal" variant="link" leftIcon={<WarningIcon />}>
+						<Stack spacing={6} display={{ base: "none", lg: "flex" }} alignItems="start">
+							<Button colorScheme="gray.500" variant="link" leftIcon={<WarningIcon />}>
 								<Link href="/">Home</Link>
 							</Button>
-							<Box>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<EditIcon />}>
 								<Link href="/calculator">Calculator</Link>
-							</Box>
-							<Box>
+							</Button>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<StarIcon />}>
 								<Link href="/mint">Flash mint</Link>
-							</Box>
-							<Box>
+							</Button>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<CopyIcon />}>
 								<Link href="/docs">Docs</Link>
-							</Box>
+							</Button>
 						</Stack>
 						{/* SOCIAL MEDIA */}
-						<Flex justify="space-between" align="center" w="full" px={{ sm: 0, md: 1, lg: 5 }} display={{ base: "none", lg: "flex" }}>
+						<Flex justify="space-between" align="start" w="full" px={{ sm: 0, md: 1, lg: 5 }} display={{ base: "none", lg: "flex" }}>
 							<Box p="2" bg="red.400">
 								Git
 							</Box>
@@ -80,10 +81,8 @@ export default function Nav({ children }: any) {
 							</Box>
 						</Flex>
 						{/* MOBILE VERSION */}
-						<Button background="#DBF227" display={{ base: "flex", lg: "none" }}>
-							wallet
-						</Button>
-						<IconButton variant="outline" display={{ base: "flex", lg: "none" }} aria-label="Send email" icon={<HamburgerIcon />} onClick={() => setDrawer(true)} />
+						<WalletButton display={{ base: "flex", lg: "none" }}></WalletButton>
+						<IconButton variant="outline" display={{ base: "flex", lg: "none" }} aria-label="Menu" icon={<HamburgerIcon />} onClick={() => setDrawer(true)} />
 						{/* DRAWER */}
 						<Drawer isOpen={isDrawer} placement="right" onClose={() => setDrawer(false)}>
 							<DrawerOverlay />
@@ -91,19 +90,19 @@ export default function Nav({ children }: any) {
 								<DrawerCloseButton />
 								<DrawerHeader>Kirbank</DrawerHeader>
 
-								<DrawerBody gap={6}>
-									<Button colorScheme="teal" variant="link" leftIcon={<WarningIcon />}>
+								<DrawerBody gap={7} display="flex" flexDirection="column" alignItems="start" pt="20">
+									<Button colorScheme="gray.500" variant="link" leftIcon={<WarningIcon />}>
 										<Link href="/">Home</Link>
 									</Button>
-									<Box>
+									<Button colorScheme="gray.500" variant="link" leftIcon={<EditIcon />}>
 										<Link href="/calculator">Calculator</Link>
-									</Box>
-									<Box>
+									</Button>
+									<Button colorScheme="gray.500" variant="link" leftIcon={<StarIcon />}>
 										<Link href="/mint">Flash mint</Link>
-									</Box>
-									<Box>
+									</Button>
+									<Button colorScheme="gray.500" variant="link" leftIcon={<CopyIcon />}>
 										<Link href="/docs">Docs</Link>
-									</Box>
+									</Button>
 								</DrawerBody>
 
 								<DrawerFooter>

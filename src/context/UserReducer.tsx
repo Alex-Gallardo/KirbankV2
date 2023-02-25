@@ -1,6 +1,5 @@
 // TYPES
-import { SELECCIONAR_USUARIO, SELECCIONAR_NFT, CANTIDAD_NFT, ACTUALIZAR_TOTAL } from "../types";
-import { ACTUALIZAR_RED } from "./../types/index";
+import { ACTUALIZAR_RED, ACTUALIZAR_TOTAL, CANTIDAD_NFT, SELECCIONAR_NFT, SELECCIONAR_USUARIO } from "../types";
 
 export default (state: any, action: any) => {
 	switch (action.type) {

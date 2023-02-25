@@ -6,7 +6,7 @@ const UserContext = createContext({
 	total: 0,
 	red: false,
 	agregarUsuario: (e: any) => {},
-	agregarNFT: (r: any) => {},
+	agregarNFT: (e: any) => {},
 	cantidadNFTS: (e: any) => {},
 	actualizarTotal: () => {},
 	actualizarRed: (e: any) => {}
