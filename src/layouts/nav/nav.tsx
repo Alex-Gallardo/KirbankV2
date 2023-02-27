@@ -30,6 +30,7 @@ import { useRouter } from "next/router";
 export default function Nav({ children }: any) {
 	const [isDrawer, setDrawer] = useState(false);
 	const router = useRouter();
+
 	return (
 		<>
 			<Head>

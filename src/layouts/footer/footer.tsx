@@ -43,7 +43,7 @@ export default function Footer() {
 				});
 			} else {
 				toast({
-					title: "Desconectado a la red",
+					title: "Desconectado de la red",
 					status: "warning",
 					duration: 1250,
 					variant: "solid",
@@ -80,7 +80,6 @@ export default function Footer() {
 
 	useEffect(() => {
 		checkRedIsRunning();
-		console.log("llamda");
 	}, []);
 
 	return (
@@ -92,12 +91,12 @@ export default function Footer() {
 				<Flex justify="space-between" align="center" px={{ sm: "0", md: "1", lg: "5" }}>
 					<Box px="2" display="flex" alignItems="center" color={red ? "gray.800" : "red.500"}>
 						{red ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
-						{red ? "Red conectada" : "Red desconectada"}
+						{red ? "Network connected" : "Network offline"}
 					</Box>
 					<Spacer />
-					<Box px="2" display="flex" alignItems="center" color={usuario.length > 0 ? "gray.800" : "red.500"}>
-						{usuario.length > 0 ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
-						{usuario.length > 0 ? "Wallet conectada" : "Wallet desconectada"}
+					<Box px="2" display="flex" alignItems="center" color={usuario ? "gray.800" : "red.500"}>
+						{usuario ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
+						{usuario ? "Wallet connected" : "Wallet offline"}
 					</Box>
 				</Flex>
 			</Flex>

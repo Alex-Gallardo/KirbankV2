@@ -1,5 +1,5 @@
-import { useState } from "react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
+// import Image from "next/image";
 import { Inter } from "@next/font/google";
 import {
 	Alert,
@@ -21,14 +21,31 @@ import {
 	StatLabel,
 	StatNumber,
 	Text,
-	VStack
+	VStack, Image
 } from "@chakra-ui/react";
 import Nav from "@/layouts/nav/nav";
+import { ethers } from "ethers";
+import { abiKirbankTokenAddress } from "config";
+import KirbankToken from '@/utils/abi/KirbankToken.json'
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
 	// ESTADOS
+	const [tokens, setTokens] = useState([])
+
+	// Obtener tokens
+	const getAllTokens = async ()=>{
+		const provider = new ethers.providers.JsonRpcBatchProvider("https://eth-goerli.g.alchemy.com/v2/3LjxKHUHH-Vylm2-tRJTs2OR1hgyIp4k");
+		const contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, provider)
+		const getTokens = await contract.getAllKirbankTokens()
+		setTokens(getTokens)
+		console.log("tokens", getTokens, abiKirbankTokenAddress, process)
+	}
+
+	useEffect(()=>{
+		getAllTokens()
+	}, [])
 
 	return (
 		<Nav>
@@ -71,12 +88,14 @@ export default function Home() {
 						<Center h="50px" borderBottom="2px" borderColor="gray.500">
 							STACK
 						</Center>
-						<Box h="40px" bg="gray.200">
-							2
-						</Box>
-						<Box h="40px" bg="gray.100">
-							3
-						</Box>
+						{tokens.map((token: any, i:number)=>(
+							<Flex direction='row' align='center' justify='space-around'  h="40px" bg="gray.200" key={`token_${i}`}>
+								<Image src={token.imageUrl} style={{ borderRadius: '6px'}} width={30} height={30} alt="KirbankToken"/>
+								<Text>{token.cost}</Text>
+								<Text>{token.yearsSet}</Text>
+							</Flex>
+						))}
+						
 					</VStack>
 					<VStack divider={<StackDivider borderColor="gray.200" />} spacing={0} align="stretch" w={{ sm: "full", md: "full", lg: "50%" }} rounded="md" overflow="hidden" h="full">
 						<Box p={3} bg="blue.900" color="white">

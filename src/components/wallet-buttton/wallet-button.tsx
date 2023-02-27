@@ -1,32 +1,33 @@
 import { Button, Icon, Text, useToast } from "@chakra-ui/react";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import UserContext from "@/context/UserContext";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
+import useTruncatedAddress from '@/hooks/useTruncatedAddress';
+import useCheckMetamask from "@/hooks/useCheckMetamask";
 
 const WalletButton = ({ ...props }: any) => {
 	// STATE
 	const [text, setText] = useState("Connect your wallet");
 	const router = useRouter();
 	const toast = useToast();
-
+	
 	// CONTEXT
 	const userContext = useContext(UserContext);
 	const { usuario, agregarUsuario, actualizarRed } = userContext;
 
-	useEffect(() => {
-		if (usuario.length > 0) {
-			let addressWallet: string = `${usuario.substr(0, 6)}...${usuario.substr(-4)}`;
-			setText(addressWallet);
-		} else router.pathname != "/login" ? router.replace("/login") : "";
-	}, []);
+	
+	console.log("primera carga wallet", usuario)
+	// useEffect(()=>{
+	// 	if(usuario){
+	// 		console.log("existe usuario!!")
+	// 		let res = useTruncatedAddress(usuario)
+	// 	}else{
+	// 		console.log("NO existe usuario!!")
 
-	// Truncar (acortar) la dirección de la wallet
-	const useTruncatedAddress = (account: any) => {
-		const truncated = useMemo(() => `${account?.substr(0, 6)}...${account?.substr(-4)}`, [account]);
-		return truncated;
-	};
+	// 	}
+	// },[])
 
 	// Funcion para conectar Metamask
 	const connectMetamask = async () => {
@@ -48,12 +49,13 @@ const WalletButton = ({ ...props }: any) => {
 			// eth_requestAccounts: Solicita las cuentas Metamask
 			const accounts = await ethereum.request({ method: "eth_requestAccounts" });
 			const provider = new ethers.providers.Web3Provider(ethereum);
-			const signer = provider.getSigner();
+			// const signer = provider.getSigner();
 			// console.log("Signer", signer);
 			agregarUsuario(accounts[0]);
-			let addressWallet: string = `${accounts[0]?.substr(0, 6)}...${accounts[0]?.substr(-4)}`;
-			setText(addressWallet);
-			console.log("Account -wallet", addressWallet);
+			// let addressWallet: string = `${accounts[0]?.substr(0, 6)}...${accounts[0]?.substr(-4)}`;
+			// setText(accounts[0]);
+			// setText(addressWallet);
+			// console.log("Account -wallet", addressWallet);
 
 			// Establecimiento de red
 			// RED ESTABLECIDA

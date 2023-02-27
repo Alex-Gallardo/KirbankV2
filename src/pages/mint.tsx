@@ -24,23 +24,54 @@ import { Inter } from "@next/font/google";
 import Nav from "@/layouts/nav/nav";
 import styles from "@/styles/Home.module.css";
 import { useState } from "react";
+import { ethers } from "ethers";
+import { abiKirbankTokenAddress } from "config";
+import KirbankToken from '@/utils/abi/KirbankToken.json'
+
+interface KirbankToken {
+	imageUrl: string
+	cost: string
+	yearsSet: string
+        dateCreate: string
+}
 
 export default function MintIndex() {
 	// ESTADOS
+	const [newToken, setNewToken] = useState<KirbankToken>({
+		imageUrl: 'https://i.pinimg.com/originals/ae/ec/c2/aeecc22a67dac7987a80ac0724658493.jpg',
+		cost: '500',
+		yearsSet: "1",
+		dateCreate: Date.now() + '',
+	})
 	const [visible, setVisible] = useState(false);
 	const [minting, setMinting] = useState(false);
 
 	// Proceso de minteo
 	const setMintingProcces = () => {
-		setMinting(true);
-		setTimeout(() => {
 			setMinting(false);
 			setVisible(true);
 			setTimeout(() => {
 				setVisible(false);
-			}, 5000);
-		}, 3000);
+			}, 6000);
 	};
+
+	// Mintear un token
+	const addToken = async ()=>{
+		const {ethereum}: any = window
+
+		if(ethereum){
+			const provider = new ethers.providers.Web3Provider(ethereum)
+			const signer = provider.getSigner();
+
+			const contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, signer)
+			const transaction = await contract.addKirbankToken(newToken.imageUrl, newToken.cost, newToken.yearsSet, newToken.dateCreate)
+			setMinting(true);
+			console.log("Transaction initalized")
+			await transaction.wait()
+			console.log("Transaction fiinitalized")
+			setMintingProcces()
+		}
+	}
 
 	return (
 		<Nav>
@@ -120,7 +151,7 @@ export default function MintIndex() {
 						color="white"
 						spinnerPlacement="end"
 						w="full"
-						onClick={() => setMintingProcces()}
+						onClick={() => addToken()}
 						colorScheme="facebook"
 					>
 						MINTING
