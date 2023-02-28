@@ -16,7 +16,12 @@ import {
 	Spacer,
 	StackDivider,
 	Text,
-	VStack, useToast
+	VStack, useToast,
+	NumberInput,
+	NumberInputField,
+	NumberInputStepper,
+	NumberIncrementStepper,
+	NumberDecrementStepper
 } from "@chakra-ui/react";
 
 import Image from "next/image";
@@ -40,13 +45,14 @@ export default function MintIndex() {
 	const [newToken, setNewToken] = useState<KirbankToken>({
 		imageUrl: 'https://media4.giphy.com/media/pn1e1I4nAVtSMo1h7y/giphy.gif?cid=ecf05e47ryp98dwo8ttimovuonlp970vmz9xwzpjbnywvolf&rid=giphy.gif&ct=g',
 		cost: '',
-		yearsSet: "",
+		yearsSet: '',
 		dateCreate: Date.now() + '',
 	})
-	const [ calc, setCalc] = useState<{ ammount: number, year: number, percent: number, final: number}>({
+	const [ calc, setCalc] = useState<{ ammount: number, year: number, percent: number,  profit: number,final: number}>({
 		ammount: 0,
-		year: 0,
+		year: 1,
 		percent: 0,
+		profit: 0,
 		final: 0
 	})
 	const [visible, setVisible] = useState(false);
@@ -98,50 +104,52 @@ export default function MintIndex() {
 
 		// Cantidad
 		if(ammount > 0 && ammount <= 1000){
-			a = 0.1
+			a = 0.01
 		}else if(ammount > 1000 && ammount <= 10000){
-			a = 0.2
+			a = 0.02
 		}else if(ammount > 10000 && ammount <= 50000){
-			a = 0.4
+			a = 0.04
 		}else if(ammount > 50000 && ammount <= 100000){
-			a = 0.6
+			a = 0.06
 		}else if(ammount > 100000 && ammount <= 500000){
-			a = 0.8
+			a = 0.08
 		}else if(ammount > 500000 && ammount <= 1000000){
-			a = 1
+			a = 0.1
 		}else {
 			a = 0
 		}
 
 		// Años
-		if(year > 0 && year <= 1){
-			b = 0.1
-		}else if(year > 1 && year <= 2){
-			b = 0.2
-		}else if(year > 2 && year <= 3){
-			b = 0.4
-		}else if(year > 3 && year <= 4){
-			b = 0.6
-		}else if(year > 4 && year <= 5){
-			b = 0.8
+		if( year <= 1){
+			b = 0.01
+		}else if( year <= 2){
+			b = 0.02
+		}else if( year <= 3){
+			b = 0.04
+		}else if( year <= 4){
+			b = 0.06
+		}else if( year <= 5){
+			b = 0.08
 		}else if(year > 5 && year <= 10){
-			b = 1
+			b = 0.1
 		}else if(year > 10 && year <= 15){
-			b = 1.2
+			b = 0.12
 		}else if(year > 15 && year <= 20){
-			b = 1.4
+			b = 0.14
 		}else {
 			b = 0
 		}
 
 		let percent: number = a + b;
+		let profit: number = (ammount * percent)
 		let final: number = (ammount * percent)+ ammount;
-		setCalc({...calc, percent, final })
+		setCalc({...calc, percent, final, profit })
 	}
 
 	// Cambios input
 	const handleChange = (event: any, op: string) => {
-		let valor: any = event.target.value 
+		let valor: any = 0 
+		if(op != 'year') valor = event.target.value 
 		if(valor == "") valor = 0
 
 		switch(op){
@@ -150,8 +158,8 @@ export default function MintIndex() {
 				setNewToken({...newToken, cost: valor + ''})
 				break;
 			case "year":
-				setCalc({...calc, year: parseInt(valor, 10)})
-				setNewToken({...newToken, yearsSet: valor + ''})
+				setCalc({...calc, year: parseInt(event)})
+				setNewToken({...newToken, yearsSet: event})
 				break;
 			case "link":
 				setNewToken({...newToken, imageUrl: valor + ''})
@@ -172,17 +180,20 @@ export default function MintIndex() {
 		const contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, provider)
 		const getTokens = await contract.getAllKirbankTokens()
 		setTokens(getTokens)
-		console.log("tokens", getTokens, abiKirbankTokenAddress, process)
 	}
 
 	useEffect(()=>{
 		getAllTokens()
+
+		let a = localStorage.getItem("ammount")
+		let y = localStorage.getItem("year")
+		if(a && y) setCalc({...calc, ammount: parseInt(a, 10), year: parseInt(y, 10)})
 	}, [])
 
 	return (
 		<Nav>
 			{/* <main className={styles.main}> */}
-			<Box minWidth="full" maxWidth="container.xl" h="full" mt={12}>
+			<Box minWidth="full" maxWidth="container.xl" h="max" mt={12}>
 				{/* HEADING */}
 				<Flex flexDirection="column" align="cstart" justify="start">
 					<Box>
@@ -207,25 +218,26 @@ export default function MintIndex() {
 							<InputGroup>
 								<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" children="i" />
 								<Input placeholder="Link image http://..." onChange={(e)=>handleChange(e, 'link')} />
-								{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
 							</InputGroup>
 						</Box>
 						<Box p="2">
 							<InputGroup>
 								<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" children="$" />
-								<Input placeholder="Enter ammount" type='number' onChange={(e)=>handleChange(e, 'ammount')} />
-								{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
+								<Input placeholder="Enter ammount" type='number' value={calc.ammount} onChange={(e)=>handleChange(e, 'ammount')} />
 							</InputGroup>
 						</Box>
 						{/* ENTRADA DOBLE */}
 						<HStack divider={<StackDivider borderColor="gray.400" />} spacing={0} align="stretch" w="full" overflow="hidden">
-							<Box p="2" flex="1">
-								<InputGroup>
-									<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" children="Y" />
-									<Input placeholder="Enter years" type='number' onChange={(e)=>handleChange(e, 'year')} />
-									{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
-								</InputGroup>
-							</Box>
+							<Flex p="2" flex="1" direction='row' align='center'>
+								<Text mr={5} as='b' color="blue.900">Years:</Text>
+								<NumberInput value={calc.year} max={20} min={1} onChange={(e)=>handleChange(e, 'year')}>
+									<NumberInputField />
+									<NumberInputStepper>
+										<NumberIncrementStepper />
+										<NumberDecrementStepper />
+									</NumberInputStepper>
+								</NumberInput>
+							</Flex>
 							<Flex p="2" flex="1" align='center' justify='end'>
 								<Text color="blue.900" as="b">
 									{calc.percent.toFixed(2)} %
@@ -242,13 +254,13 @@ export default function MintIndex() {
 								</Text>
 							</Flex>
 							<Flex minWidth="full" alignItems="center" gap="2" mt={3}>
-								<Text color="blue.900"><Text as="b" >year: </Text> $ {calc.final}</Text>
+								<Text color="blue.900"><Text as="b" >year: </Text > $ {calc.profit.toFixed(2)}</Text>
 								<Spacer />
 								<Text color="blue.900" as="b">
 									{calc.year} years
 								</Text>
 								<Spacer />
-								<Text color="blue.900"><Text as="b" >final: </Text> $ {calc.final * calc.year}</Text>
+								<Text color="blue.900" ><Text as="b" >final: </Text > $ {((calc.profit * calc.year) + calc.ammount).toFixed(2)}</Text>
 							</Flex>
 						</VStack>
 					</VStack>

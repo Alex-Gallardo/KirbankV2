@@ -117,11 +117,11 @@ export default function Nav({ children }: any) {
 					</Flex>
 					{/* Contenido */}
 					<Flex h="100vh" w={{ base: "100%", lg: "80%" }} flexDirection="column" justify="space-between" borderLeft={"2px"} borderColor="gray.200">
-						<Header></Header>
-						<Flex w="full" h="full" px={{ base: 6, md: 8, lg: 10 }}>
+						<Header />
+						<Flex w="full" h="full" px={{ base: 6, md: 8, lg: 10 }} overflowY={{base:'auto',lg:'scroll'}} >
 							{children}
 						</Flex>
-						<Footer></Footer>
+						<Footer />
 					</Flex>
 				</Flex>
 			)}

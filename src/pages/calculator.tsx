@@ -10,7 +10,12 @@ import {
 	InputGroup,
 	InputLeftElement,
 	Input,
-	HStack
+	HStack,
+	NumberInput,
+	NumberInputField,
+	NumberInputStepper,
+	NumberIncrementStepper,
+	NumberDecrementStepper
 } from "@chakra-ui/react";
 
 import Nav from "@/layouts/nav/nav";
@@ -21,11 +26,12 @@ import { useState, useEffect } from "react";
 export default function CalculatorIndex() {
 	// ESTADOS
 	const [visible, setVisible] = useState(false);
-	const [ calc, setCalc] = useState<{ ammount: number, year: number, percent: number, final: number}>({
+	const [ calc, setCalc] = useState<{ ammount: number, year: number, percent: number, profit: number, final: number }>({
 		ammount: 0,
-		year: 0,
+		year: 1,
 		percent: 0,
-		final: 0
+		profit: 0, 
+		final: 0,
 	})
 
 	// Computa los calculos
@@ -37,58 +43,62 @@ export default function CalculatorIndex() {
 
 		// Cantidad
 		if(ammount > 0 && ammount <= 1000){
-			a = 0.1
+			a = 0.01
 		}else if(ammount > 1000 && ammount <= 10000){
-			a = 0.2
+			a = 0.02
 		}else if(ammount > 10000 && ammount <= 50000){
-			a = 0.4
+			a = 0.04
 		}else if(ammount > 50000 && ammount <= 100000){
-			a = 0.6
+			a = 0.06
 		}else if(ammount > 100000 && ammount <= 500000){
-			a = 0.8
+			a = 0.08
 		}else if(ammount > 500000 && ammount <= 1000000){
-			a = 1
+			a = 0.1
 		}else {
 			a = 0
 		}
 
 		// Años
-		if(year > 0 && year <= 1){
-			b = 0.1
-		}else if(year > 1 && year <= 2){
-			b = 0.2
-		}else if(year > 2 && year <= 3){
-			b = 0.4
-		}else if(year > 3 && year <= 4){
-			b = 0.6
-		}else if(year > 4 && year <= 5){
-			b = 0.8
+		if( year <= 1){
+			b = 0.01
+		}else if( year <= 2){
+			b = 0.02
+		}else if( year <= 3){
+			b = 0.04
+		}else if( year <= 4){
+			b = 0.06
+		}else if( year <= 5){
+			b = 0.08
 		}else if(year > 5 && year <= 10){
-			b = 1
+			b = 0.1
 		}else if(year > 10 && year <= 15){
-			b = 1.2
+			b = 0.12
 		}else if(year > 15 && year <= 20){
-			b = 1.4
+			b = 0.14
 		}else {
 			b = 0
 		}
 
 		let percent: number = a + b;
+		let profit: number = (ammount * percent)
 		let final: number = (ammount * percent)+ ammount;
-		setCalc({...calc, percent, final })
+		setCalc({...calc, percent, final, profit })
 	}
 
 	// Cambios input
 	const handleChange = (event: any, op: string) => {
-		let valor: any = event.target.value 
+		let valor: any = 0
+		if(op != 'year') valor = event.target.value 
 		if(valor == "") valor = 0
 
 		switch(op){
 			case "ammount":
 				setCalc({...calc, ammount: parseInt(valor, 10)})
+				localStorage.setItem("ammount", valor);
 				break;
 			case "year":
-				setCalc({...calc, year: parseInt(valor, 10)})
+				setCalc({...calc, year: parseInt(event)})
+				localStorage.setItem("year", event);
 				break;
 			default:
 				setCalc({...calc})
@@ -131,13 +141,16 @@ export default function CalculatorIndex() {
 						</Box>
 						{/* ENTRADA DOBLE */}
 						<HStack divider={<StackDivider borderColor="gray.400" />} spacing={0} align="stretch" w="full" overflow="hidden">
-							<Box p="2" flex="1">
-								<InputGroup>
-									<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" children="Y" />
-									<Input placeholder="Enter years" type='number' onChange={(e)=>handleChange(e, 'year')}/>
-									{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
-								</InputGroup>
-							</Box>
+							<Flex p="2" flex="1" direction='row' align='center'>
+								<Text mr={5} as='b' color="blue.900">Years:</Text>
+								<NumberInput defaultValue={1} max={20} min={1} onChange={(e)=>handleChange(e, 'year')}>
+									<NumberInputField />
+									<NumberInputStepper>
+										<NumberIncrementStepper />
+										<NumberDecrementStepper />
+									</NumberInputStepper>
+								</NumberInput>
+							</Flex>
 							<Flex p="2" flex="1" align='center' justify='end'>
 								<Text color="blue.900" as="b">
 									{calc.percent.toFixed(2)} %
@@ -171,14 +184,14 @@ export default function CalculatorIndex() {
 								<Text color="gray.500">year ammount</Text>
 								<Spacer />
 								<Text color="blue.900" >
-									$ {calc.final}
+									$ {calc.profit.toFixed(2)}
 								</Text>
 							</Flex>
 							<Flex minWidth="full" alignItems="center" gap="2">
 								<Text color="gray.500">final ammount</Text>
 								<Spacer />
 								<Text color="blue.900" as="b">
-									$ {calc.final * calc.year}
+									$ {((calc.profit * calc.year) + calc.ammount).toFixed(2)}
 								</Text>
 							</Flex>
 						</VStack>
