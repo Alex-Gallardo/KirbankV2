@@ -50,7 +50,7 @@ export default function Nav({ children }: any) {
 					{/* Sidebar */}
 					<Flex flexDirection={{ base: "row", lg: "column" }} justify="space-between" align="center" w={{ base: "100%", lg: "20%" }} p={5}>
 						{/* ENCABEZADOS */}
-						<Heading display={{ base: "none", lg: "flex" }}>Kirbank</Heading>
+						<Heading display={{ base: "none", lg: "flex" }} onClick={()=>router.push('/all')}>Kirbank</Heading>
 						<Heading display={{ base: "flex", lg: "none" }}>K</Heading>
 						{/* RUTAS */}
 						<Stack spacing={6} display={{ base: "none", lg: "flex" }} alignItems="start">

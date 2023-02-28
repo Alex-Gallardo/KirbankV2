@@ -32,38 +32,116 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
 	// ESTADOS
-	const [tokens, setTokens] = useState([])
+	const [tokens, setTokens] = useState<any>([])
+	const [data, setData] = useState<{day: number, percent: number, total: number, finalTotal: number}>({
+		day: 0,
+		percent: 0,
+		total: 0,
+		finalTotal: 0,
+	})
+
+	// Ordenar los datos
+	const orderData = (arrTokens: any)=>{
+
+		let total: number[] = [0,0,0,0]
+
+		arrTokens.map((token: any, i: number)=>{
+			let { percent, final} = computeTableValues(parseInt(token[2], 10), parseInt(token[3], 10))
+			total[1] += percent
+			total[2] += final
+			total[3] += final * parseInt(token[3], 10)
+		
+			console.log("total",total,":",  `(${token[2]}/${token[3]})`,"=", final, percent)
+		})
+
+		setData({...data, percent: total[1], total: total[2], finalTotal: total[3]})
+
+	}
 
 	// Obtener tokens
-	const getAllTokens = async ()=>{
-		const provider = new ethers.providers.JsonRpcBatchProvider("https://eth-goerli.g.alchemy.com/v2/3LjxKHUHH-Vylm2-tRJTs2OR1hgyIp4k");
-		const contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, provider)
-		const getTokens = await contract.getAllKirbankTokens()
-		setTokens(getTokens)
-		console.log("tokens", getTokens, abiKirbankTokenAddress, process)
+	const getMyTokens = async ()=>{
+		const {ethereum}: any = window
+
+		if(ethereum){
+			let provider = new ethers.providers.Web3Provider(ethereum)
+			let signer = provider.getSigner()
+			let contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, signer)
+			let resTokens = await contract.getKirbankTokensByOwner()
+
+			setTokens([...resTokens])
+			orderData(resTokens)
+		}
+	}
+
+	// Computa los calculos
+	const computeTableValues = (ammount: number, year: number) => {
+		let a:number = 0
+		let b: number = 0
+
+		// Cantidad
+		if(ammount > 0 && ammount <= 1000){
+			a = 0.1
+		}else if(ammount > 1000 && ammount <= 10000){
+			a = 0.2
+		}else if(ammount > 10000 && ammount <= 50000){
+			a = 0.4
+		}else if(ammount > 50000 && ammount <= 100000){
+			a = 0.6
+		}else if(ammount > 100000 && ammount <= 500000){
+			a = 0.8
+		}else if(ammount > 500000 && ammount <= 1000000){
+			a = 1
+		}else {
+			a = 0
+		}
+
+		// Años
+		if(year > 0 && year <= 1){
+			b = 0.1
+		}else if(year > 1 && year <= 2){
+			b = 0.2
+		}else if(year > 2 && year <= 3){
+			b = 0.4
+		}else if(year > 3 && year <= 4){
+			b = 0.6
+		}else if(year > 4 && year <= 5){
+			b = 0.8
+		}else if(year > 5 && year <= 10){
+			b = 1
+		}else if(year > 10 && year <= 15){
+			b = 1.2
+		}else if(year > 15 && year <= 20){
+			b = 1.4
+		}else {
+			b = 0
+		}
+
+		let percent: number = a + b;
+		let final: number = (ammount * percent)+ ammount;
+		return { percent, final}
 	}
 
 	useEffect(()=>{
-		getAllTokens()
+		getMyTokens()
 	}, [])
 
 	return (
 		<Nav>
-			<Box minWidth="full" maxWidth="container.xl" h="full" mt={12}>
+			<Box minWidth="full" maxWidth="container.xl" h="full" maxH='' overflow='scroll' mt={12}>
 				{/* Texto y data */}
 				<Flex flexDirection={{ base: "column", sm: "column", md: "column", lg: "row" }} align="center" justify="space-between" w="full" mb={12}>
 					<Box>
-						<Heading>Kirbank Token (0/500)</Heading>
+						<Heading>Kirbank Token ({tokens.length}/500)</Heading>
 						<Text>24 day, 7 hrs, 9 min to next rebase</Text>
 					</Box>
-					<Flex flexDirection="row" align="center" justify="space-between" rounded="md" bg="teal.300" px={6} minW={{ base: "100%", md: "50%" }} mt={{ base: 8, lg: 0 }}>
+					<Flex flexDirection="row" align="center" justify="space-between" rounded="md" bg="teal.300" px={6} py={3} minW={{ base: "100%", md: "50%" }} mt={{ base: 8, lg: 0 }}>
 						{/* <Heading color="#fff">$ 100.00</Heading> */}
 						<Stat color="#fff">
 							{/* <StatLabel>Feb 12 - Feb 28</StatLabel> */}
-							<StatNumber>$120.00</StatNumber>
+							<StatNumber>$ {data.day.toFixed(2)}</StatNumber>
 							<StatHelpText>
 								<StatArrow type="increase" />
-								23.36%
+								{data.percent.toFixed(2)} %
 							</StatHelpText>
 						</Stat>
 						<Spacer />
@@ -82,17 +160,20 @@ export default function Home() {
 						border="2px"
 						borderColor="gray.500"
 						rounded="lg"
-						overflow="hidden"
+						// overflow="hidden"
+						overflowY='scroll'
+						maxHeight='400px'
 						bg="white"
 					>
-						<Center h="50px" borderBottom="2px" borderColor="gray.500">
-							STACK
+						<Center minH="50px" borderBottom="2px" borderColor="gray.500">
+							MY NFT's 
 						</Center>
-						{tokens.map((token: any, i:number)=>(
-							<Flex direction='row' align='center' justify='space-around'  h="40px" bg="gray.200" key={`token_${i}`}>
+						{[...tokens].reverse().map((token: any, i:number)=>(
+							<Flex direction='row' align='center' justify='space-between'  key={`token_${i}`} px={6} py={2} borderBottom='1px' borderColor='gray.200' >
 								<Image src={token.imageUrl} style={{ borderRadius: '6px'}} width={30} height={30} alt="KirbankToken"/>
-								<Text>{token.cost}</Text>
-								<Text>{token.yearsSet}</Text>
+								<Text color='gray.400' >#KBT</Text>
+								<Text>cost: <Text as='b'>{token.cost}</Text></Text>
+								<Text>years: <Text as='b'>{token.yearsSet}</Text></Text>
 							</Flex>
 						))}
 						
@@ -100,15 +181,15 @@ export default function Home() {
 					<VStack divider={<StackDivider borderColor="gray.200" />} spacing={0} align="stretch" w={{ sm: "full", md: "full", lg: "50%" }} rounded="md" overflow="hidden" h="full">
 						<Box p={3} bg="blue.900" color="white">
 							<Text>Value</Text>
-							<Heading>0%</Heading>
+							<Heading>{data.percent.toFixed(2)} %</Heading>
 						</Box>
 						<Box p={3} bg="blue.900" color="white">
 							<Text>Value</Text>
-							<Heading>$ 0.00</Heading>
+							<Heading>$ {data.total.toFixed(2)}</Heading>
 						</Box>
 						<Box p={3} bg="blue.900" color="white">
 							<Text>Value</Text>
-							<Heading>$ 0.00</Heading>
+							<Heading>$ {data.finalTotal.toFixed(2)}</Heading>
 						</Box>
 					</VStack>
 				</Stack>

@@ -9,25 +9,20 @@ import useCheckMetamask from "@/hooks/useCheckMetamask";
 
 const WalletButton = ({ ...props }: any) => {
 	// STATE
-	const [text, setText] = useState("Connect your wallet");
+	const [text, setText] = useState("0xd123...45F");
 	const router = useRouter();
 	const toast = useToast();
 	
 	// CONTEXT
 	const userContext = useContext(UserContext);
 	const { usuario, agregarUsuario, actualizarRed } = userContext;
+	let dirWallet = useTruncatedAddress(usuario)
 
-	
-	console.log("primera carga wallet", usuario)
-	// useEffect(()=>{
-	// 	if(usuario){
-	// 		console.log("existe usuario!!")
-	// 		let res = useTruncatedAddress(usuario)
-	// 	}else{
-	// 		console.log("NO existe usuario!!")
-
-	// 	}
-	// },[])
+	// console.log("primera carga wallet", usuario)
+	useEffect(()=>{
+		if(usuario) setText(dirWallet)
+		else setText("Connect your wallet")
+	},[])
 
 	// Funcion para conectar Metamask
 	const connectMetamask = async () => {
