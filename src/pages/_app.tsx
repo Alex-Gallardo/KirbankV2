@@ -5,16 +5,17 @@ import { ChakraProvider, useToast } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 
 import type { AppProps } from "next/app";
+import { useRouter } from "next/router";
 // CONTEXT
-import UserContext from "@/context/UserContext";
 import UserState from "@/context/UserState";
 // WEB3
-import { ethers } from "ethers";
-import { useRouter } from "next/router";
 
 export default function App({ Component, pageProps }: AppProps) {
 	const router = useRouter();
 	const toast = useToast();
+
+	console.log('- primera carga app')
+	// console.log('primera carga app 2', res)
 
 	// Valida que el browser tenga instalado Metamask
 	const checkIfMetamaskIsConnected = async () => {
@@ -28,7 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
 				variant: "solid",
 				position: "top-right"
 			});
-			router.push("/login");
+			// router.push("/login");
 			return;
 		} else {
 			toast({
@@ -40,7 +41,7 @@ export default function App({ Component, pageProps }: AppProps) {
 			});
 
 			// Si se encuentra en el login
-			if (router.pathname == "/login") {
+			if (router.pathname === "/login") {
 				// RED ESTABLECIDA
 				if (ethereum.networkVersion == 5) {
 					setTimeout(() => {
@@ -92,9 +93,9 @@ export default function App({ Component, pageProps }: AppProps) {
 		}
 	};
 
-	useEffect(() => {
-		checkIfMetamaskIsConnected();
-	}, []);
+	useEffect(()=>{
+		checkIfMetamaskIsConnected()
+	},[])
 
 	return (
 		<ChakraProvider>

@@ -5,12 +5,15 @@ import { ACTUALIZAR_RED, ACTUALIZAR_TOTAL, CANTIDAD_NFT, SELECCIONAR_NFT, SELECC
 import UserContext from "./UserContext";
 // REDUCER
 import UserReducer from "./UserReducer";
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
+import { useRouter } from "next/router";
 
 const UserState = ({ children }: any) => {
+	const router = useRouter();
+
 	// State inicila
-	const initialState = {
-		usuario: "",
+	const initialState: {usuario: string | undefined, nfts: any[], total: number, red:boolean} = {
+		usuario: undefined,
 		nfts: [],
 		total: 0,
 		red: false
@@ -64,13 +67,20 @@ const UserState = ({ children }: any) => {
 	};
 
 	// Actualizar red
-	const actualizarRed = (indi: any) => {
-		console.log("Actualizar red", indi);
+	const actualizarRed = (value: any) => {
+		console.log("Actualizar red", value);
 		dispatch({
 			type: ACTUALIZAR_RED,
-			payload: indi
+			payload: value
 		});
 	};
+
+	useEffect(() => {
+		console.log("Entro a UserState")
+		if(state.usuario == undefined){
+			router.pathname != "/login" ? router.replace("/login") : "";
+		}
+	}, []);
 
 	return (
 		<UserContext.Provider
@@ -92,3 +102,7 @@ const UserState = ({ children }: any) => {
 };
 
 export default UserState;
+function toast(arg0: { title: string; status: string; duration: number; isClosable: boolean; variant: string; position: string; }) {
+	throw new Error("Function not implemented.");
+}
+

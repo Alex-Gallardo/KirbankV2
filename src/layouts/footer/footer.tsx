@@ -43,7 +43,7 @@ export default function Footer() {
 				});
 			} else {
 				toast({
-					title: "Desconectado a la red",
+					title: "Desconectado de la red",
 					status: "warning",
 					duration: 1250,
 					variant: "solid",
@@ -80,24 +80,23 @@ export default function Footer() {
 
 	useEffect(() => {
 		checkRedIsRunning();
-		console.log("llamda");
 	}, []);
 
 	return (
 		<Container minWidth="full" h="auto" p={4} borderTop={"2px"} borderColor="gray.200">
 			<Flex flexDirection="row" justify="space-between" align="center" width="full" px={5}>
-				<Text color="gray.300" fontSize={{ base: "sm", lg: "md" }}>
+				<Text color="gray.300" fontSize={{ base: "sm", lg: "md" }} noOfLines={1} >
 					© {new Date().getFullYear()} Kirbank all rights reserved
 				</Text>
 				<Flex justify="space-between" align="center" px={{ sm: "0", md: "1", lg: "5" }}>
 					<Box px="2" display="flex" alignItems="center" color={red ? "gray.800" : "red.500"}>
 						{red ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
-						{red ? "Red conectada" : "Red desconectada"}
+						<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{red ? "Network connected" : "Network offline"}</Text>
 					</Box>
 					<Spacer />
-					<Box px="2" display="flex" alignItems="center" color={usuario.length > 0 ? "gray.800" : "red.500"}>
-						{usuario.length > 0 ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
-						{usuario.length > 0 ? "Wallet conectada" : "Wallet desconectada"}
+					<Box px="2" display="flex" alignItems="center" color={usuario ? "gray.800" : "red.500"}>
+					{usuario ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
+					<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{usuario ? "Wallet connected" : "Wallet offline"}</Text>
 					</Box>
 				</Flex>
 			</Flex>

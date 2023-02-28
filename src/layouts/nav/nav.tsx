@@ -30,6 +30,7 @@ import { useRouter } from "next/router";
 export default function Nav({ children }: any) {
 	const [isDrawer, setDrawer] = useState(false);
 	const router = useRouter();
+
 	return (
 		<>
 			<Head>
@@ -49,7 +50,7 @@ export default function Nav({ children }: any) {
 					{/* Sidebar */}
 					<Flex flexDirection={{ base: "row", lg: "column" }} justify="space-between" align="center" w={{ base: "100%", lg: "20%" }} p={5}>
 						{/* ENCABEZADOS */}
-						<Heading display={{ base: "none", lg: "flex" }}>Kirbank</Heading>
+						<Heading display={{ base: "none", lg: "flex" }} onClick={()=>router.push('/all')}>Kirbank</Heading>
 						<Heading display={{ base: "flex", lg: "none" }}>K</Heading>
 						{/* RUTAS */}
 						<Stack spacing={6} display={{ base: "none", lg: "flex" }} alignItems="start">
@@ -116,11 +117,11 @@ export default function Nav({ children }: any) {
 					</Flex>
 					{/* Contenido */}
 					<Flex h="100vh" w={{ base: "100%", lg: "80%" }} flexDirection="column" justify="space-between" borderLeft={"2px"} borderColor="gray.200">
-						<Header></Header>
-						<Flex w="full" h="full" px={{ base: 6, md: 8, lg: 10 }}>
+						<Header />
+						<Flex w="full" h="full" px={{ base: 6, md: 8, lg: 10 }} overflowY={{base:'auto',lg:'scroll'}} >
 							{children}
 						</Flex>
-						<Footer></Footer>
+						<Footer />
 					</Flex>
 				</Flex>
 			)}
