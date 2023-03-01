@@ -1,7 +1,7 @@
 // TYPES
 import { ACTUALIZAR_RED, ACTUALIZAR_TOTAL, CANTIDAD_NFT, SELECCIONAR_NFT, SELECCIONAR_USUARIO } from "../types";
 
-export default (state: any, action: any) => {
+export default function UserReducer (state: any, action: any)  {
 	switch (action.type) {
 		case SELECCIONAR_USUARIO:
 			return {

@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Box, Container, Divider, Flex, Heading, SimpleGrid, Spacer, Stack, Text, useToast } from "@chakra-ui/react";
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect } from "react";
 
 import Head from "next/head";
 import Link from "next/link";
@@ -18,7 +18,7 @@ export default function Footer() {
 	const { usuario, red, actualizarRed } = userContext;
 
 	// Evalua las circustancias de la red
-	const checkRedIsRunning = () => {
+	const checkRedIsRunning = useCallback(() => {
 		const { ethereum }: any = window;
 
 		if (!ethereum) {
@@ -76,11 +76,11 @@ export default function Footer() {
 				}
 			});
 		}
-	};
+	},[ actualizarRed, router, toast]);
 
 	useEffect(() => {
-		checkRedIsRunning();
-	}, []);
+		checkRedIsRunning()
+	}, [checkRedIsRunning]);
 
 	return (
 		<Container minWidth="full" h="auto" p={4} borderTop={"2px"} borderColor="gray.200">

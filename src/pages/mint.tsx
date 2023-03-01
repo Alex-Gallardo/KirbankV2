@@ -13,25 +13,26 @@ import {
 	Input,
 	InputGroup,
 	InputLeftElement,
-	Spacer,
-	StackDivider,
-	Text,
-	VStack, useToast,
+	NumberDecrementStepper,
+	NumberIncrementStepper,
 	NumberInput,
 	NumberInputField,
 	NumberInputStepper,
-	NumberIncrementStepper,
-	NumberDecrementStepper
+	Spacer,
+	StackDivider,
+	Text,
+	VStack,
+	useToast
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 import Image from "next/image";
 import { Inter } from "@next/font/google";
-import Nav from "@/layouts/nav/nav";
-import styles from "@/styles/Home.module.css";
-import { useState, useEffect } from "react";
-import { ethers } from "ethers";
-import { abiKirbankTokenAddress } from "config";
 import KirbankToken from '@/utils/abi/KirbankToken.json'
+import Nav from "@/layouts/nav/nav";
+import { abiKirbankTokenAddress } from "config";
+import { ethers } from "ethers";
+import styles from "@/styles/Home.module.css";
 
 interface KirbankToken {
 	imageUrl: string
@@ -172,6 +173,7 @@ export default function MintIndex() {
 
 	useEffect(()=>{
 		computeTableValues()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	},[calc.year, calc.ammount])
 
 	// Obtener tokens
@@ -188,6 +190,7 @@ export default function MintIndex() {
 		let a = localStorage.getItem("ammount")
 		let y = localStorage.getItem("year")
 		if(a && y) setCalc({...calc, ammount: parseInt(a, 10), year: parseInt(y, 10)})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	return (
@@ -216,13 +219,13 @@ export default function MintIndex() {
 					>
 						<Box p="2">
 							<InputGroup>
-								<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" children="i" />
+								<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" >i</InputLeftElement>
 								<Input placeholder="Link image http://..." onChange={(e)=>handleChange(e, 'link')} />
 							</InputGroup>
 						</Box>
 						<Box p="2">
 							<InputGroup>
-								<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" children="$" />
+								<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" >$</InputLeftElement>
 								<Input placeholder="Enter ammount" type='number' value={calc.ammount} onChange={(e)=>handleChange(e, 'ammount')} />
 							</InputGroup>
 						</Box>

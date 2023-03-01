@@ -22,7 +22,7 @@ const WalletButton = ({ ...props }: any) => {
 	useEffect(()=>{
 		if(usuario) setText(dirWallet)
 		else setText("Connect your wallet")
-	},[])
+	},[usuario, dirWallet])
 
 	// Funcion para conectar Metamask
 	const connectMetamask = async () => {

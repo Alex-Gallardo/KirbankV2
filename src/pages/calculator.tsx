@@ -1,27 +1,26 @@
 import {
 	Box,
-	Spacer,
 	Container,
 	Flex,
+	HStack,
 	Heading,
-	StackDivider,
-	Text,
-	VStack,
+	Input,
 	InputGroup,
 	InputLeftElement,
-	Input,
-	HStack,
+	NumberDecrementStepper,
+	NumberIncrementStepper,
 	NumberInput,
 	NumberInputField,
 	NumberInputStepper,
-	NumberIncrementStepper,
-	NumberDecrementStepper
+	Spacer,
+	StackDivider,
+	Text,
+	VStack
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 import Nav from "@/layouts/nav/nav";
 import styles from "@/styles/Home.module.css";
-import { useState, useEffect } from "react";
-
 
 export default function CalculatorIndex() {
 	// ESTADOS
@@ -108,7 +107,8 @@ export default function CalculatorIndex() {
 
 	useEffect(()=>{
 		computeTableValues()
-	},[calc.year, calc.ammount])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	},[calc.ammount,calc.year])
 
 	return (
 		<Nav>
@@ -134,7 +134,7 @@ export default function CalculatorIndex() {
 					>
 						<Box p="2">
 							<InputGroup>
-								<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" children="$" />
+								<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" >$</InputLeftElement>
 								<Input placeholder="Enter amount" type='number' onChange={(e)=>handleChange(e, 'ammount')}/>
 								{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
 							</InputGroup>

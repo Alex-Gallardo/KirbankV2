@@ -2,12 +2,13 @@
 import "@/styles/globals.css";
 
 import { ChakraProvider, useToast } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect } from "react";
 
 import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
 // CONTEXT
 import UserState from "@/context/UserState";
+import { useRouter } from "next/router";
+
 // WEB3
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -95,6 +96,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
 	useEffect(()=>{
 		checkIfMetamaskIsConnected()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	},[])
 
 	return (
