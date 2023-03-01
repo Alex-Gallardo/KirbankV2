@@ -140,6 +140,7 @@ export default function Home() {
 
 	useEffect(()=>{
 		getMyTokens()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	return (
@@ -181,7 +182,7 @@ export default function Home() {
 						bg="white"
 					>
 						<Center minH="50px" borderBottom="2px" borderColor="gray.500">
-							MY NFT's 
+							MY NFTs 
 						</Center>
 						{/* Si NO existen NFTs */}
 						{tokens.length == 0?(<Flex direction="column" align='center' justify='center' py='6'><Heading size={{base:'md', lg:'lg'}}>No NFTs</Heading><Text color="gray.300">Add your frist NFT in /mint</Text></Flex>):null}
@@ -200,7 +201,7 @@ export default function Home() {
 									<Text color='gray.400' flex='1' >#KBT</Text>
 								</GridItem>
 								<GridItem colSpan={4}>
-									<Text flex='1' noOfLines={1}><Text as='b'>$ </Text> {token.cost}</Text>
+									<Text flex='1' noOfLines={1}> <Badge colorScheme='green'>$ {token.cost}</Badge></Text>
 								</GridItem>
 								<GridItem colSpan={4}>
 									<Text flex='1' noOfLines={1}>years: <Text as='b'  >{token.yearsSet}</Text></Text>

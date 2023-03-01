@@ -14,7 +14,7 @@ const LoginIndex = () => {
 				<Text>1 KBTK = $1.24</Text>
 				<Text>
 					Join us and become part of the excitement of creating a unique and valuable NFT! We mint an NFT with an exclusive design and an opportunity to generate recurring income.
-					Don't miss this opportunity to own a unique and valuable digital asset! Secure your NFT now!
+					Dont miss this opportunity to own a unique and valuable digital asset! Secure your NFT now!
 				</Text>
 				<WalletButton></WalletButton>
 				{/* <Button background="#DBF227">

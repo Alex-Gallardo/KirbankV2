@@ -1,11 +1,11 @@
 // TYPES
 import { ACTUALIZAR_RED, ACTUALIZAR_TOTAL, CANTIDAD_NFT, SELECCIONAR_NFT, SELECCIONAR_USUARIO } from "../types";
+import { useEffect, useReducer } from "react";
 
 // CONTEXT
 import UserContext from "./UserContext";
 // REDUCER
 import UserReducer from "./UserReducer";
-import { useEffect, useReducer } from "react";
 import { useRouter } from "next/router";
 
 const UserState = ({ children }: any) => {
@@ -80,6 +80,7 @@ const UserState = ({ children }: any) => {
 		if(state.usuario == undefined){
 			router.pathname != "/login" ? router.replace("/login") : "";
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
