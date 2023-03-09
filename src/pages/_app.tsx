@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
 	const router = useRouter();
 	const toast = useToast();
 
-	console.log('- primera carga app')
+	console.log('- primera carga app -')
 	// console.log('primera carga app 2', res)
 
 	// Valida que el browser tenga instalado Metamask

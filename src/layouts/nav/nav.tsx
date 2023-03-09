@@ -17,8 +17,8 @@ import {
 	Spacer,
 	Stack
 } from "@chakra-ui/react";
-import { CopyIcon, EditIcon, HamburgerIcon, StarIcon, WarningIcon } from "@chakra-ui/icons";
-import { useEffect, useState } from "react";
+import { HamburgerIcon } from "@chakra-ui/icons";
+import { useState } from "react";
 
 import Footer from "../footer/footer";
 import Head from "next/head";
@@ -26,6 +26,12 @@ import Header from "../header/header";
 import Link from "next/link";
 import WalletButton from "@/components/wallet-buttton/wallet-button";
 import { useRouter } from "next/router";
+import CalculatorIcon from "@/icons/calculator";
+import HomeIcon from "@/icons/home";
+import FlashIcon from "@/icons/flash";
+import DocsIcon from "@/icons/docs";
+import GithubIcon from "@/icons/github";
+import DiscordIcon from "@/icons/discord";
 
 export default function Nav({ children }: any) {
 	const [isDrawer, setDrawer] = useState(false);
@@ -48,37 +54,37 @@ export default function Nav({ children }: any) {
 			) : (
 				<Flex h="100vh" w="100vw" gap={0} flexDirection={{ base: "column", lg: "row" }}>
 					{/* Sidebar */}
-					<Flex flexDirection={{ base: "row", lg: "column" }} justify="space-between" align="center" w={{ base: "100%", lg: "20%" }} p={5}>
+					<Flex flexDirection={{ base: "row", lg: "column" }} justify="space-between" align="center" w={{ base: "100%", lg: "20%" }} maxW={{lg:'330px'}} p={5} bg='gray.100' >
 						{/* ENCABEZADOS */}
-						<Heading display={{ base: "none", lg: "flex" }} onClick={()=>router.push('/all')}>Kirbank</Heading>
+						<Heading display={{ base: "none", lg: "flex" }} onClick={()=>router.push('/all')} color='gray.700'>Kirbank</Heading>
 						<Heading display={{ base: "flex", lg: "none" }}>K</Heading>
 						{/* RUTAS */}
-						<Stack spacing={6} display={{ base: "none", lg: "flex" }} alignItems="start">
-							<Button colorScheme="gray.500" variant="link" leftIcon={<WarningIcon />}>
+						<Stack spacing={8} display={{ base: "none", lg: "flex" }} alignItems="start">
+							<Button colorScheme="gray.500" variant="link" leftIcon={<HomeIcon />}>
 								<Link href="/">Home</Link>
 							</Button>
-							<Button colorScheme="gray.500" variant="link" leftIcon={<EditIcon />}>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<CalculatorIcon />}>
 								<Link href="/calculator">Calculator</Link>
 							</Button>
-							<Button colorScheme="gray.500" variant="link" leftIcon={<StarIcon />}>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<FlashIcon />}>
 								<Link href="/mint">Flash mint</Link>
 							</Button>
-							<Button colorScheme="gray.500" variant="link" leftIcon={<CopyIcon />}>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<DocsIcon />}>
 								<Link href="/docs">Docs</Link>
 							</Button>
 						</Stack>
 						{/* SOCIAL MEDIA */}
 						<Flex justify="space-between" align="start" w="full" px={{ sm: 0, md: 1, lg: 5 }} display={{ base: "none", lg: "flex" }}>
-							<Box p="2" bg="red.400">
-								Git
+							<Box p="2" >
+								<GithubIcon w='26px' h='26px' fill='gray.400'/>
 							</Box>
-							<Spacer />
+							{/* <Spacer />
 							<Box p="2" bg="green.400">
 								Link
-							</Box>
+							</Box> */}
 							<Spacer />
-							<Box p="2" bg="blue.400">
-								Dis
+							<Box p="2">
+								<DiscordIcon w='26px' h='26px' fill='gray.400'/>
 							</Box>
 						</Flex>
 						{/* MOBILE VERSION */}
@@ -92,16 +98,16 @@ export default function Nav({ children }: any) {
 								<DrawerHeader>Kirbank</DrawerHeader>
 
 								<DrawerBody gap={7} display="flex" flexDirection="column" alignItems="start" pt="20">
-									<Button colorScheme="gray.500" variant="link" leftIcon={<WarningIcon />}>
+									<Button colorScheme="gray.500" variant="link" leftIcon={<HomeIcon />}>
 										<Link href="/">Home</Link>
 									</Button>
-									<Button colorScheme="gray.500" variant="link" leftIcon={<EditIcon />}>
+									<Button colorScheme="gray.500" variant="link" leftIcon={<CalculatorIcon />}>
 										<Link href="/calculator">Calculator</Link>
 									</Button>
-									<Button colorScheme="gray.500" variant="link" leftIcon={<StarIcon />}>
+									<Button colorScheme="gray.500" variant="link" leftIcon={<FlashIcon />}>
 										<Link href="/mint">Flash mint</Link>
 									</Button>
-									<Button colorScheme="gray.500" variant="link" leftIcon={<CopyIcon />}>
+									<Button colorScheme="gray.500" variant="link" leftIcon={<DocsIcon />}>
 										<Link href="/docs">Docs</Link>
 									</Button>
 								</DrawerBody>
@@ -116,7 +122,7 @@ export default function Nav({ children }: any) {
 						</Drawer>
 					</Flex>
 					{/* Contenido */}
-					<Flex h="100vh" w={{ base: "100%", lg: "80%" }} flexDirection="column" justify="space-between" borderLeft={"2px"} borderColor="gray.200">
+					<Flex h="100vh" w={{ base: "100%", lg: "80%" }} flexDirection="column" justify="space-between" borderLeft={"2px"} borderColor="gray.100">
 						<Header />
 						<Flex w="full" h="full" px={{ base: 6, md: 8, lg: 10 }} overflowY={{base:'auto',lg:'scroll'}} >
 							{children}

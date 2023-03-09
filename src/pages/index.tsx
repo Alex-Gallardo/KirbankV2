@@ -1,7 +1,13 @@
 import {
 	Badge,
 	Box,
+	Button,
+	ButtonGroup,
+	Card,
+	CardBody,
+	CardFooter,
 	Center,
+	Divider,
 	Flex,
 	Grid,
 	GridItem,
@@ -15,8 +21,12 @@ import {
 	StatHelpText,
 	StatLabel,
 	StatNumber,
+	Tag,
+	TagLabel,
 	Text,
-	VStack
+	VStack,
+	Wrap,
+	WrapItem
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
@@ -130,6 +140,7 @@ export default function Home() {
 		if(ethereum){
 			let provider = new ethers.providers.Web3Provider(ethereum)
 			let signer = provider.getSigner()
+			// console.log("-- signer --", await signer.getAddress())
 			let contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, signer)
 			let resTokens = await contract.getKirbankTokensByOwner()
 
@@ -167,65 +178,63 @@ export default function Home() {
 				</Flex>
 
 				{/* Contenido y tablas */}
-				<Stack direction={{ base: "column", lg: "row" }} mt={{base: 8, lg: 12}}>
-					<VStack
-						spacing={0}
-						align="stretch"
-						w={{ base: "full", lg: "50%" }}
-						mt={{ base: 3, lg: 0 }}
-						border="2px"
-						borderColor="gray.500"
-						rounded="lg"
-						// overflow="hidden"
-						overflowY='scroll'
-						maxHeight='400px'
-						bg="white"
-					>
-						<Center minH="50px" borderBottom="2px" borderColor="gray.500">
-							MY NFTs 
-						</Center>
-						{/* Si NO existen NFTs */}
-						{tokens.length == 0?(<Flex direction="column" align='center' justify='center' py='6'><Heading size={{base:'md', lg:'lg'}}>No NFTs</Heading><Text color="gray.300">Add your frist NFT in /mint</Text></Flex>):null}
-						{[...tokens].reverse().map((token: any, i:number)=>(
-							<Grid
-								templateColumns='repeat(12, 1fr)'
-								gap={1}
-								key={`token_${i}`} px={6} py={2} borderBottom='1px' borderColor='gray.200'
-							>
-								<GridItem colSpan={2}>
-									<Flex direction='row' align='center' justify='center'>
-										<Image src={token.imageUrl} style={{ borderRadius: '4px'}} width={30} height={30} alt="KirbankToken" alignSelf='center' />
-									</Flex>
-								</GridItem>
-								<GridItem colSpan={2}>
-									<Text color='gray.400' flex='1' >#KBT</Text>
-								</GridItem>
-								<GridItem colSpan={4}>
-									<Text flex='1' noOfLines={1}> <Badge colorScheme='green'>$ {token.cost}</Badge></Text>
-								</GridItem>
-								<GridItem colSpan={4}>
-									<Text flex='1' noOfLines={1}>years: <Text as='b'  >{token.yearsSet}</Text></Text>
-								</GridItem>
-								{/* <GridItem colSpan={12} bg='tomato' ></GridItem> */}
-						  </Grid>
-						))}
-					</VStack>
-					
+				<Stack direction="column" mt={{base: 8, lg: 12}}>
 					{/* Data analytics */}
-					<VStack divider={<StackDivider borderColor="gray.200" />} spacing={0} align="stretch" w={{ sm: "full", md: "full", lg: "50%" }} rounded="md" overflow="hidden" h="full">
-						<Box p={3} bg="blue.900" color="white">
+					<Stack direction={{base: 'column', lg:'row'}} divider={<StackDivider borderColor="gray.200" />} spacing={0} align="stretch" w="full" rounded="md" overflow="hidden" h="full">
+						<Box p={3} bg="blue.900" color="white" w='full'>
 							<Text>Value percentage total</Text>
 							<Heading>{data.percent.toFixed(2)} %</Heading>
 						</Box>
-						<Box p={3} bg="blue.900" color="white">
+						<Box p={3} bg="blue.900" color="white" w='full'>
 							<Text>Profit value per year</Text>
 							<Heading>$ {data.total.toFixed(2)}</Heading>
 						</Box>
-						<Box p={3} bg="blue.900" color="white">
+						<Box p={3} bg="blue.900" color="white" w='full'>
 							<Text>Final win value</Text>
 							<Heading>$ {data.finalTotal.toFixed(2)}</Heading>
 						</Box>
-					</VStack>
+					</Stack>
+					<Box py={5} w='full'>
+						<Tag size='lg' variant='subtle' colorScheme='cyan' py='3' w='full'>
+							<TagLabel as='b'>Mis NFTS</TagLabel>
+						</Tag>
+					</Box>
+
+					{/* LISTADO #2 */}
+					<Wrap spacing='30px'>
+						{[...tokens].reverse().map((token: any, i:number)=>(
+							<WrapItem key={i}>
+								<Card maxW={{base:'sm', md:'xs', lg:'sm'}} boxShadow='lg' variant='outline'>
+									<CardBody>
+										<Image
+										src={token.imageUrl}
+										alt='Kirbank NFT Token'
+										borderRadius='lg'
+										/>
+										<Stack mt='6' spacing='2'>
+											<Heading size='md'>Kirbank Token #KBT</Heading>
+											<Text>
+												
+											</Text>
+											<Text flex='1' noOfLines={1}>investment: <Badge colorScheme='green'>$ {token.cost}</Badge></Text>
+											<Text flex='1' noOfLines={1}>years: <Text as='b'  >{token.yearsSet}</Text></Text>
+										</Stack>
+									</CardBody>
+									<Divider />
+									<CardFooter>
+										<ButtonGroup spacing='2'>
+											<Button variant='solid' colorScheme='blue'>
+												Shared
+											</Button>
+											<Button variant='ghost' colorScheme='blue'>
+												See more
+											</Button>
+										</ButtonGroup>
+									</CardFooter>
+								</Card>
+							</WrapItem>
+						))}
+					</Wrap>
 				</Stack>
 			</Box>
 		</Nav>

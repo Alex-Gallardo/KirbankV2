@@ -1,19 +1,31 @@
-import { useEffect, useState } from "react";
-// import Image from "next/image";
-import { Inter } from "@next/font/google";
 import {
+	Badge,
 	Box,
+	Button,
+	ButtonGroup,
+	Card,
+	CardBody,
+	CardFooter,
+	Divider,
 	Flex,
 	Heading,
+	Highlight,
+	Image,
+	Stack,
 	StackDivider,
 	Text,
-	VStack, Image, Highlight
+	VStack,
+	Wrap,
+	WrapItem,
 } from "@chakra-ui/react";
-import Nav from "@/layouts/nav/nav";
-import { ethers } from "ethers";
-import { abiKirbankTokenAddress } from "config";
-import KirbankToken from '@/utils/abi/KirbankToken.json'
+import { useEffect, useState } from "react";
 
+// import Image from "next/image";
+import { Inter } from "@next/font/google";
+import KirbankToken from '@/utils/abi/KirbankToken.json'
+import Nav from "@/layouts/nav/nav";
+import { abiKirbankTokenAddress } from "config";
+import { ethers } from "ethers";
 
 export default function All() {
 	// ESTADOS
@@ -55,7 +67,36 @@ export default function All() {
 						<Text mt={5} fontSize="2xl">Total: $ <Text as='b'>{total}</Text></Text>
 					</Box>
 
-
+					{/* LISTADO #2 */}
+					<Wrap spacing='30px'>
+						{[...tokens].reverse().map((token: any, i:number)=>(
+							<WrapItem key={i}>
+								<Card maxW='xs' boxShadow='lg' variant='outline'>
+									<CardBody>
+										<Image
+										src={token.imageUrl}
+										alt='Kirbank NFT Token'
+										borderRadius='lg'
+										/>
+										<Stack mt='6' spacing='2'>
+											<Heading size='md'>Kirbank Token #KBT</Heading>
+											<Text flex='1' noOfLines={1}>investment: <Badge colorScheme='green'>$ {token.cost}</Badge></Text>
+											<Text flex='1' noOfLines={1}>years: <Text as='b'  >{token.yearsSet}</Text></Text>
+											<Text>owner: <Text as='b'>{token.owner}</Text></Text>
+										</Stack>
+									</CardBody>
+									<Divider />
+									<CardFooter>
+										<ButtonGroup spacing='2'>
+											<Button variant='ghost' colorScheme='blue'>
+												See more
+											</Button>
+										</ButtonGroup>
+									</CardFooter>
+								</Card>
+							</WrapItem>
+						))}
+					</Wrap>
 
                     {/* TOKENS */}
                     <VStack divider={<StackDivider borderColor="gray.200" />} spacing={2} align="stretch" w={{ sm: "full" }} rounded="md" overflow="hidden" h="full">
