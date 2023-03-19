@@ -95,8 +95,8 @@ export default function Footer() {
 					</Box>
 					<Spacer />
 					<Box px="2" display="flex" alignItems="center" color={usuario ? "gray.800" : "red.500"}>
-					{usuario ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
-					<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{usuario ? "Wallet connected" : "Wallet offline"}</Text>
+						{usuario ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
+						<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{usuario ? "Wallet connected" : "Wallet offline"}</Text>
 					</Box>
 				</Flex>
 			</Flex>

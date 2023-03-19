@@ -6,34 +6,42 @@ import {
 	Card,
 	CardBody,
 	CardFooter,
-	Center,
 	Divider,
 	Flex,
-	Grid,
-	GridItem,
+	FormControl,
+	FormLabel,
 	Heading,
 	Image,
+	Input,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	ModalOverlay,
 	Spacer,
 	Stack,
 	StackDivider,
 	Stat,
 	StatArrow,
 	StatHelpText,
-	StatLabel,
 	StatNumber,
 	Tag,
 	TagLabel,
 	Text,
-	VStack,
 	Wrap,
-	WrapItem
+	WrapItem,
+	useDisclosure
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import { useContext, useEffect, useRef, useState } from "react";
 
 // import Image from "next/image";
 import { Inter } from "@next/font/google";
 import KirbankToken from '@/utils/abi/KirbankToken.json'
 import Nav from "@/layouts/nav/nav";
+import UserContext from "@/context/UserContext";
 import { abiKirbankTokenAddress } from "config";
 import { ethers } from "ethers";
 
@@ -48,6 +56,14 @@ export default function Home() {
 		total: 0,
 		finalTotal: 0,
 	})
+	const [isModal, setOptModal] = useState(false)
+	const [isToken, setToken] = useState<any>({})
+
+	const initialRef = useRef(null)
+	const finalRef = useRef(null)
+
+	const userContext = useContext(UserContext);
+	const { usuario, red, actualizarRed } = userContext;
 
 	// Ordenar los datos
 	const orderData = (arrTokens: any)=>{
@@ -72,6 +88,7 @@ export default function Home() {
 			 
 			arrDates.push([ Math.trunc(diff/(1000*60*60*24)) ,  parseInt(token[3]), profit/365, ((profit/365) * Math.trunc(diff/(1000*60*60*24))) ])
 			// arrDates.push([dateToken.getDate(), dateToken.getMonth() + 1, dateToken.getFullYear(), dateToken.getHours() , parseInt(token[3])])
+			console.log('data Dates', dateToken.getUTCDate(), dateToken.getDate(),'/', dateToken.getMonth() + 1,'/', dateToken.getFullYear(), dateToken.getHours(),':',dateToken.getMinutes() )
 		})
 
 		let day: number = 0
@@ -91,38 +108,38 @@ export default function Home() {
 
 		// Cantidad
 		if(ammount > 0 && ammount <= 1000){
-			a = 0.01
+			a = 0.001
 		}else if(ammount > 1000 && ammount <= 10000){
-			a = 0.02
+			a = 0.002
 		}else if(ammount > 10000 && ammount <= 50000){
-			a = 0.04
+			a = 0.004
 		}else if(ammount > 50000 && ammount <= 100000){
-			a = 0.06
+			a = 0.006
 		}else if(ammount > 100000 && ammount <= 500000){
-			a = 0.08
+			a = 0.008
 		}else if(ammount > 500000 && ammount <= 1000000){
-			a = 0.1
+			a = 0.01
 		}else {
 			a = 0
 		}
 
 		// Años
 		if(year > 0 && year <= 1){
-			b = 0.01
+			b = 0.001
 		}else if(year > 1 && year <= 2){
-			b = 0.02
+			b = 0.002
 		}else if(year > 2 && year <= 3){
-			b = 0.04
+			b = 0.004
 		}else if(year > 3 && year <= 4){
-			b = 0.06
+			b = 0.006
 		}else if(year > 4 && year <= 5){
-			b = 0.08
+			b = 0.008
 		}else if(year > 5 && year <= 10){
-			b = 0.1
+			b = 0.01
 		}else if(year > 10 && year <= 15){
-			b = 0.12
+			b = 0.012
 		}else if(year > 15 && year <= 20){
-			b = 0.14
+			b = 0.014
 		}else {
 			b = 0
 		}
@@ -132,27 +149,36 @@ export default function Home() {
 		let final: number = (ammount * percent)+ ammount;
 		return { percent, profit, final}
 	}
-
-	// Obtener tokens
-	const getMyTokens = async ()=>{
-		const {ethereum}: any = window
-
-		if(ethereum){
-			let provider = new ethers.providers.Web3Provider(ethereum)
-			let signer = provider.getSigner()
-			// console.log("-- signer --", await signer.getAddress())
-			let contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, signer)
-			let resTokens = await contract.getKirbankTokensByOwner()
-
-			setTokens([...resTokens])
-			orderData(resTokens)
-		}
-	}
-
+	
 	useEffect(()=>{
-		getMyTokens()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+		// Obtener tokens
+		const {ethereum}: any = window
+	
+		// Da error al iniciar desde 0
+		// try {
+			if(ethereum){
+				let provider = new ethers.providers.Web3Provider(ethereum)
+				let signer = provider.getSigner()
+				// console.log("-- signer --", await signer.getAddress())
+				let contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, signer)
+				contract.getKirbankTokensByOwner().then((tokens: any) =>{
+					setTokens([...tokens])
+					orderData(tokens)
+				})
+			}
+		// }catch(e){
+			// alert('Error, unable: Intenta recargar la pagina')
+			// console.log('Error inicial:', e)
+		// }
+		
+	},[])
+
+	// Activa el modal
+	const activeModal = (token: any)=>{
+		console.log("token recibido:", token, typeof token)
+		setToken(token)
+		setOptModal(true)
+	}
 
 	return (
 		<Nav>
@@ -163,14 +189,14 @@ export default function Home() {
 						<Heading>Kirbank Token ({tokens.length}/500)</Heading>
 						<Text>24 day, 7 hrs, 9 min to next rebase</Text>
 					</Box>
-					<Flex flexDirection="row" align="center" justify="space-between" rounded="md" bg="cyan.600" px={6} py={2} minW={{ base: "100%", md: "50%" }} mt={{ base: 8, lg: 0 }}>
+					<Flex flexDirection="row" align="center" justify="space-between" rounded="md" bg="cyan.600" px={6} py={2} minW={{ base: "100%", lg: "50%" }} mt={{ base: 8, lg: 0 }}>
 						{/* <Heading color="#fff">$ 100.00</Heading> */}
 						<Stat color="white"  >
 							{/* <StatLabel>Feb 12 - Feb 28</StatLabel> */}
 							<StatNumber>$ {data.day.toFixed(2)}</StatNumber>
 							<StatHelpText  >
 								<StatArrow type="increase" />
-								{data.percent.toFixed(2)} %
+								{data.percent.toFixed(3)} %
 							</StatHelpText>
 						</Stat>
 						<Text color="#fff">Your earnings / day</Text>
@@ -183,7 +209,7 @@ export default function Home() {
 					<Stack direction={{base: 'column', lg:'row'}} divider={<StackDivider borderColor="gray.200" />} spacing={0} align="stretch" w="full" rounded="md" overflow="hidden" h="full">
 						<Box p={3} bg="blue.900" color="white" w='full'>
 							<Text>Value percentage total</Text>
-							<Heading>{data.percent.toFixed(2)} %</Heading>
+							<Heading>{data.percent.toFixed(3)} %</Heading>
 						</Box>
 						<Box p={3} bg="blue.900" color="white" w='full'>
 							<Text>Profit value per year</Text>
@@ -196,45 +222,108 @@ export default function Home() {
 					</Stack>
 					<Box py={5} w='full'>
 						<Tag size='lg' variant='subtle' colorScheme='cyan' py='3' w='full'>
-							<TagLabel as='b'>Mis NFTS</TagLabel>
+							<TagLabel as='b'>My NFT</TagLabel>
 						</Tag>
 					</Box>
 
 					{/* LISTADO #2 */}
 					<Wrap spacing='30px'>
-						{[...tokens].reverse().map((token: any, i:number)=>(
-							<WrapItem key={i}>
-								<Card maxW={{base:'sm', md:'xs', lg:'sm'}} boxShadow='lg' variant='outline'>
-									<CardBody>
-										<Image
-										src={token.imageUrl}
-										alt='Kirbank NFT Token'
-										borderRadius='lg'
-										/>
-										<Stack mt='6' spacing='2'>
+						{[...tokens].reverse().map((token: any, i:number)=>{
+							let dateToken = new Date(parseInt(token.dateCreate,10))
+							return(
+								<WrapItem key={i}>
+									<Card maxW={{base:'sm', md:'xs', lg:'sm'}} boxShadow='lg' variant='outline'>
+										<CardBody>
+											<Image
+											src={token.imageUrl}
+											alt='Kirbank NFT Token'
+											borderRadius='lg'
+											/>
+											<Stack mt='6' spacing='2'>
 											<Heading size='md'>Kirbank Token #KBT</Heading>
-											<Text>
-												
-											</Text>
-											<Text flex='1' noOfLines={1}>investment: <Badge colorScheme='green'>$ {token.cost}</Badge></Text>
-											<Text flex='1' noOfLines={1}>years: <Text as='b'  >{token.yearsSet}</Text></Text>
-										</Stack>
-									</CardBody>
-									<Divider />
-									<CardFooter>
-										<ButtonGroup spacing='2'>
-											<Button variant='solid' colorScheme='blue'>
-												Shared
-											</Button>
-											<Button variant='ghost' colorScheme='blue'>
-												See more
-											</Button>
-										</ButtonGroup>
-									</CardFooter>
-								</Card>
-							</WrapItem>
-						))}
+												<Text  noOfLines={1}>investment: <Badge colorScheme='green'>$ {token.cost}</Badge></Text>
+												<Text  noOfLines={1}>time: <Badge colorScheme='blue'>{token.yearsSet} years</Badge></Text>
+												<Text  noOfLines={1}>created: <Badge colorScheme='orange'>{`${dateToken.getDate()} / ${dateToken.getMonth() + 1} / ${dateToken.getFullYear()}`}</Badge></Text>
+												<Text  noOfLines={1}>percentage: <Badge colorScheme='purple'>{computeTableValues(parseInt(token.cost,10), parseInt(token.yearsSet,10) ).percent.toFixed(3)} %</Badge></Text>
+											</Stack>
+										</CardBody>
+										<Divider />
+										<CardFooter>
+											<ButtonGroup spacing='2'>
+												<Button variant='solid' colorScheme='blue'>
+													Shared
+												</Button>
+												<Button variant='ghost' colorScheme='blue' onClick={()=> activeModal(token)}>
+													Transfer
+												</Button>
+											</ButtonGroup>
+										</CardFooter>
+									</Card>
+								</WrapItem>
+							)})}
 					</Wrap>
+					<Modal
+						initialFocusRef={initialRef}
+						finalFocusRef={finalRef}
+						isOpen={isModal}
+						onClose={()=>setOptModal(false)}
+						size={{base: 'xl'}}
+						isCentered
+					>
+						<ModalOverlay
+							bg='none'
+							backdropFilter='auto'
+							backdropInvert='80%'
+							backdropBlur='2px'
+						/>
+						<ModalContent>
+							<ModalHeader>Transfer your NFT</ModalHeader>
+							<ModalCloseButton />
+							
+							<ModalBody pb={6}>
+								<Stack direction={{base: 'column', md: 'row'}} gap='6' align={{base:"center", md: 'end'}} justify={{base: 'center'}}>
+									<WrapItem>
+										<Card boxShadow='lg' variant='outline' direction='row' maxW={{base:'300px', md: 'max-content'}} >
+											<CardBody>
+												<Image
+												src={isToken.imageUrl}
+												alt='Kirbank NFT Token'
+												borderRadius='lg'
+												/>
+												<Stack mt='6' spacing='2'>
+												<Heading size='sm'>Kirbank Token #KBT</Heading>
+													<Text >investment: <Badge colorScheme='green'>$ {isToken.cost}</Badge></Text>
+													<Text >time: <Badge colorScheme='blue'>{isToken.yearsSet} years</Badge></Text>
+													<Text >percentage: <Badge colorScheme='purple'>{computeTableValues(parseInt(isToken.cost,10), parseInt(isToken.yearsSet,10) ).percent.toFixed(3)} %</Badge></Text>
+												</Stack>
+											</CardBody>
+										</Card>
+									</WrapItem>
+									<FormControl minW={{base: 'max-content', }}>
+										<Text mb='2'>Before transferring let's make sure:</Text>
+										<Box px="2" display="flex" alignItems="center" color={red ? "gray.800" : "red.500"}>
+											{red ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
+											<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{red ? "Network connected" : "Network offline"}</Text>
+										</Box>
+										<Spacer />
+										<Box px="2" display="flex" alignItems="center" color={usuario ? "gray.800" : "red.500"}>
+											{usuario ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
+											<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{usuario ? "Wallet connected" : "Wallet offline"}</Text>
+										</Box>
+										<FormLabel mt='4'>Enter the address to transfer</FormLabel>
+										<Input ref={initialRef} placeholder='0x735...0x0' />
+									</FormControl>
+								</Stack>
+							</ModalBody>
+
+							<ModalFooter>
+								<Button colorScheme='blue' mr={3}>
+									Transfer
+								</Button>
+								<Button onClick={()=>setOptModal(false)}>Cancel</Button>
+							</ModalFooter>
+						</ModalContent>
+					</Modal>
 				</Stack>
 			</Box>
 		</Nav>
