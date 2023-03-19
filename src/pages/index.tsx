@@ -178,7 +178,8 @@ export default function Home() {
 			// alert('Error, unable: Intenta recargar la pagina')
 			// console.log('Error inicial:', e)
 		// }
-		
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	},[])
 
 	// Activa el modal
@@ -339,7 +340,7 @@ export default function Home() {
 										</Card>
 									</WrapItem>
 									<FormControl minW={{base: 'max-content', }}>
-										<Text mb='3'>Before transferring let's make sure:</Text>
+										<Text mb='3'>Before transferring lets make sure:</Text>
 										<Tag color='white' bg={red?'green.500':'red.400'}>
 											{red?
 												<CheckIcon fill='white' mr='2' />
