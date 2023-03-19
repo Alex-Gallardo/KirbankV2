@@ -54,29 +54,29 @@ export default function Nav({ children }: any) {
 			) : (
 				<Flex h="100vh" w="100vw" gap={0} flexDirection={{ base: "column", lg: "row" }}>
 					{/* Sidebar */}
-					<Flex flexDirection={{ base: "row", lg: "column" }} justify="space-between" align="center" w={{ base: "100%", lg: "20%" }} maxW={{lg:'330px'}} p={5} bg='gray.100' >
+					<Flex flexDirection={{ base: "row", lg: "column" }} justify="space-between" align="center" w={{ base: "100%", lg: "20%" }} maxW={{lg:'330px'}} p={5} className='background-navbar' >
 						{/* ENCABEZADOS */}
 						<Heading display={{ base: "none", lg: "flex" }} onClick={()=>router.push('/all')} color='gray.700'>Kirbank</Heading>
 						<Heading display={{ base: "flex", lg: "none" }}>K</Heading>
 						{/* RUTAS */}
 						<Stack spacing={8} display={{ base: "none", lg: "flex" }} alignItems="start">
-							<Button colorScheme="gray.500" variant="link" leftIcon={<HomeIcon />}>
-								<Link href="/">Home</Link>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<HomeIcon />} fontSize='xl'>
+								<Link style={{marginLeft: '0.5em'}} href="/">Home</Link>
 							</Button>
-							<Button colorScheme="gray.500" variant="link" leftIcon={<CalculatorIcon />}>
-								<Link href="/calculator">Calculator</Link>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<CalculatorIcon />} fontSize='xl'>
+								<Link style={{marginLeft: '0.5em'}} href="/calculator">Calculator</Link>
 							</Button>
-							<Button colorScheme="gray.500" variant="link" leftIcon={<FlashIcon />}>
-								<Link href="/mint">Flash mint</Link>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<FlashIcon />} fontSize='xl'>
+								<Link style={{marginLeft: '0.5em'}} href="/mint">Flash mint</Link>
 							</Button>
-							<Button colorScheme="gray.500" variant="link" leftIcon={<DocsIcon />}>
-								<Link href="/docs">Docs</Link>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<DocsIcon />} fontSize='xl'>
+								<Link style={{marginLeft: '0.5em'}} href="/docs">Docs</Link>
 							</Button>
 						</Stack>
 						{/* SOCIAL MEDIA */}
 						<Flex justify="space-between" align="start" w="full" px={{ sm: 0, md: 1, lg: 5 }} display={{ base: "none", lg: "flex" }}>
 							<Box p="2" >
-								<GithubIcon w='26px' h='26px' fill='gray.400'/>
+								<GithubIcon w='26px' h='26px' fill='gray.400' onClick={()=> router.push('https://github.com/Alex-Gallardo/KirbankV2' )} />
 							</Box>
 							{/* <Spacer />
 							<Box p="2" bg="green.400">
@@ -122,7 +122,7 @@ export default function Nav({ children }: any) {
 						</Drawer>
 					</Flex>
 					{/* Contenido */}
-					<Flex h="100vh" w={{ base: "100%", lg: "80%" }} flexDirection="column" justify="space-between" borderLeft={"2px"} borderColor="gray.100">
+					<Flex h="100vh" w={{ base: "100%", lg: "80%" }} flexDirection="column" justify="space-between">
 						<Header />
 						<Flex w="full" h="full" px={{ base: 6, md: 8, lg: 10 }} overflowY={{base:'auto',lg:'scroll'}} >
 							{children}

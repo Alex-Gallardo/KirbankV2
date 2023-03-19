@@ -120,7 +120,7 @@ const LoginIndex = () => {
 								<Heading size={{base: "sm", lg:'md'}}>Personal </Heading>
 
 								<Text py='2' display={{base: 'none', lg: "flex"}}>
-									Connect with your wallet and view all your financial data in real time.
+									Connect with your wallet and see all your financial data per day
 								</Text>
 							</CardBody>
 						</Stack>
@@ -140,12 +140,10 @@ const LoginIndex = () => {
 						</Center>
 						<Stack>
 							<CardBody p={0} display='flex' flexDir='column' alignItems='start' justifyContent='center' px={{base: 4, lg: 0}}  paddingRight={{base: 0, lg: 6}}>
-							<Heading size={{base: "sm", lg:'md'}}>Calculator</Heading>
-
-							<Text py='2' display={{base: 'none', lg: "flex"}}>
-								Caffè latte is a coffee beverage of Italian origin made with espresso
-								and steamed milk.
-							</Text>
+								<Heading size={{base: "sm", lg:'md'}}>Calculator</Heading>
+								<Text py='2' display={{base: 'none', lg: "flex"}}>
+									Make your investment calculations in real time
+								</Text>
 							</CardBody>
 						</Stack>
 				</Card>

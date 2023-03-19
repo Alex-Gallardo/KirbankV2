@@ -9,7 +9,6 @@ import {
 	Divider,
 	Flex,
 	Heading,
-	Highlight,
 	Image,
 	Stack,
 	StackDivider,
@@ -53,11 +52,59 @@ export default function All() {
 		getAllTokens()
 	}, [])
 
+	// Computa los calculos
+	const computeTableValues = (ammount: number, year: number) => {
+		let a:number = 0
+		let b: number = 0
+
+		// Cantidad
+		if(ammount > 0 && ammount <= 1000){
+			a = 0.001
+		}else if(ammount > 1000 && ammount <= 10000){
+			a = 0.002
+		}else if(ammount > 10000 && ammount <= 50000){
+			a = 0.004
+		}else if(ammount > 50000 && ammount <= 100000){
+			a = 0.006
+		}else if(ammount > 100000 && ammount <= 500000){
+			a = 0.008
+		}else if(ammount > 500000 && ammount <= 1000000){
+			a = 0.01
+		}else {
+			a = 0
+		}
+
+		// Años
+		if(year > 0 && year <= 1){
+			b = 0.001
+		}else if(year > 1 && year <= 2){
+			b = 0.002
+		}else if(year > 2 && year <= 3){
+			b = 0.004
+		}else if(year > 3 && year <= 4){
+			b = 0.006
+		}else if(year > 4 && year <= 5){
+			b = 0.008
+		}else if(year > 5 && year <= 10){
+			b = 0.01
+		}else if(year > 10 && year <= 15){
+			b = 0.012
+		}else if(year > 15 && year <= 20){
+			b = 0.014
+		}else {
+			b = 0
+		}
+
+		let percent: number = a + b;
+		let profit: number = (ammount * percent)
+		let final: number = (ammount * percent)+ ammount;
+		return { percent, profit, final}
+	}
+
 	return (
 		<Nav>
-			<Box minWidth="full" maxWidth="container.xl" h="full" mt={12} px={10}>
-				
-                
+			<Box minWidth="full" maxWidth="container.xl" h="max-content" mt={12} px={10}>
+
                 {/* Texto y data */}
 				<Flex flexDirection={{ base: "column"}} align="center" justify="start" w="full" mb={12}>
 					<Box mb={10} w='full' >
@@ -69,8 +116,9 @@ export default function All() {
 
 					{/* LISTADO #2 */}
 					<Wrap spacing='30px'>
-						{[...tokens].reverse().map((token: any, i:number)=>(
-							<WrapItem key={i}>
+						{[...tokens].reverse().map((token: any, i:number)=>{
+							let dateToken = new Date(parseInt(token.dateCreate,10))
+							return (<WrapItem key={i}>
 								<Card maxW='xs' boxShadow='lg' variant='outline'>
 									<CardBody>
 										<Image
@@ -80,8 +128,10 @@ export default function All() {
 										/>
 										<Stack mt='6' spacing='2'>
 											<Heading size='md'>Kirbank Token #KBT</Heading>
-											<Text flex='1' noOfLines={1}>investment: <Badge colorScheme='green'>$ {token.cost}</Badge></Text>
-											<Text flex='1' noOfLines={1}>years: <Text as='b'  >{token.yearsSet}</Text></Text>
+											<Text  noOfLines={1}>investment: <Badge colorScheme='green'>$ {token.cost}</Badge></Text>
+											<Text  noOfLines={1}>time: <Badge colorScheme='blue'>{token.yearsSet} years</Badge></Text>
+											<Text  noOfLines={1}>created: <Badge colorScheme='orange'>{`${dateToken.getHours()}:${dateToken.getMinutes()} - ${dateToken.getDate()}/${dateToken.getMonth() + 1}/${dateToken.getFullYear()}`}</Badge></Text>
+											{/* <Text  noOfLines={1}>time: <Badge colorScheme='purple'>{token.yearsSet} years</Badge></Text> */}
 											<Text>owner: <Text as='b'>{token.owner}</Text></Text>
 										</Stack>
 									</CardBody>
@@ -95,21 +145,8 @@ export default function All() {
 									</CardFooter>
 								</Card>
 							</WrapItem>
-						))}
+						)})}
 					</Wrap>
-
-                    {/* TOKENS */}
-                    <VStack divider={<StackDivider borderColor="gray.200" />} spacing={2} align="stretch" w={{ sm: "full" }} rounded="md" overflow="hidden" h="full">
-					    {tokens.map((token: any, i:number)=>(
-							<Flex direction='row' align='center' justify='space-between'  key={`token_${i}`} px={6} bg='gray.100' p={5} >
-								<Image src={token.imageUrl} style={{ borderRadius: '6px'}} width={50} height={50} alt="KirbankToken"/>
-								<Text color='gray.400' >#{i+1} KBT </Text>
-								<Text>cost: <Text as='b'>{token.cost}</Text></Text>
-								<Text>years: <Text as='b'>{token.yearsSet}</Text></Text>
-								<Text>owner: <Text as='b'>{token.owner}</Text></Text>
-							</Flex>
-						))}
-					</VStack>
 				</Flex>
 			</Box>
 		</Nav>
