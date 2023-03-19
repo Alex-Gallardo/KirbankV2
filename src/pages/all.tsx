@@ -103,9 +103,8 @@ export default function All() {
 
 	return (
 		<Nav>
-			<Box minWidth="full" maxWidth="container.xl" h="full" mt={12} px={10}>
-				
-                
+			<Box minWidth="full" maxWidth="container.xl" h="max-content" mt={12} px={10}>
+
                 {/* Texto y data */}
 				<Flex flexDirection={{ base: "column"}} align="center" justify="start" w="full" mb={12}>
 					<Box mb={10} w='full' >
@@ -148,19 +147,6 @@ export default function All() {
 							</WrapItem>
 						)})}
 					</Wrap>
-
-                    {/* TOKENS */}
-                    <VStack divider={<StackDivider borderColor="gray.200" />} spacing={2} align="stretch" w={{ sm: "full" }} rounded="md" overflow="hidden" h="full">
-					    {tokens.map((token: any, i:number)=>(
-							<Flex direction='row' align='center' justify='space-between'  key={`token_${i}`} px={6} bg='gray.100' p={5} >
-								<Image src={token.imageUrl} style={{ borderRadius: '6px'}} width={50} height={50} alt="KirbankToken"/>
-								<Text color='gray.400' >#{i+1} KBT </Text>
-								<Text>cost: <Text as='b'>{token.cost}</Text></Text>
-								<Text>years: <Text as='b'>{token.yearsSet}</Text></Text>
-								<Text>owner: <Text as='b'>{token.owner}</Text></Text>
-							</Flex>
-						))}
-					</VStack>
 				</Flex>
 			</Box>
 		</Nav>

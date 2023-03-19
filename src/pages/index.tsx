@@ -32,7 +32,15 @@ import {
 	Text,
 	Wrap,
 	WrapItem,
-	useDisclosure
+	useDisclosure,
+	Popover,
+	PopoverTrigger,
+	PopoverContent,
+	PopoverHeader,
+	PopoverArrow,
+	PopoverCloseButton,
+	PopoverBody,
+	PopoverFooter
 } from "@chakra-ui/react";
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -186,10 +194,10 @@ export default function Home() {
 				{/* Texto y data */}
 				<Flex flexDirection={{ base: "column", sm: "column", md: "column", lg: "row" }} align="center" justify="space-between" w="full" >
 					<Box>
-						<Heading>Kirbank Token ({tokens.length}/500)</Heading>
+						<Heading>Kirbank Token ({tokens.length}/50)</Heading>
 						<Text>24 day, 7 hrs, 9 min to next rebase</Text>
 					</Box>
-					<Flex flexDirection="row" align="center" justify="space-between" rounded="md" bg="cyan.600" px={6} py={2} minW={{ base: "100%", lg: "50%" }} mt={{ base: 8, lg: 0 }}>
+					<Flex flexDirection="row" align="center" justify="space-between" rounded="md" bg="green.600" px={6} py={2} minW={{ base: "100%", lg: "50%" }} mt={{ base: 8, lg: 0 }}>
 						{/* <Heading color="#fff">$ 100.00</Heading> */}
 						<Stat color="white"  >
 							{/* <StatLabel>Feb 12 - Feb 28</StatLabel> */}
@@ -207,16 +215,16 @@ export default function Home() {
 				<Stack direction="column" mt={{base: 8, lg: 12}}>
 					{/* Data analytics */}
 					<Stack direction={{base: 'column', lg:'row'}} divider={<StackDivider borderColor="gray.200" />} spacing={0} align="stretch" w="full" rounded="md" overflow="hidden" h="full">
-						<Box p={3} bg="blue.900" color="white" w='full'>
-							<Text>Value percentage total</Text>
+						<Box p={3} bg="yellow.600" color="white" w='full'>
+							<Text mb={{base: '0', lg:'3'}}>Value percentage total</Text>
 							<Heading>{data.percent.toFixed(3)} %</Heading>
 						</Box>
-						<Box p={3} bg="blue.900" color="white" w='full'>
-							<Text>Profit value per year</Text>
+						<Box p={3} bg="teal.600" color="white" w='full'>
+							<Text mb={{base: '0', lg:'3'}}>Profit value per year</Text>
 							<Heading>$ {data.total.toFixed(2)}</Heading>
 						</Box>
-						<Box p={3} bg="blue.900" color="white" w='full'>
-							<Text>Final win value</Text>
+						<Box p={3} bg="pink.600" color="white" w='full'>
+							<Text mb={{base: '0', lg:'3'}}>Final win value</Text>
 							<Heading>$ {data.finalTotal.toFixed(2)}</Heading>
 						</Box>
 					</Stack>
@@ -250,9 +258,40 @@ export default function Home() {
 										<Divider />
 										<CardFooter>
 											<ButtonGroup spacing='2'>
-												<Button variant='solid' colorScheme='blue'>
-													Shared
-												</Button>
+
+												<Popover
+													// initialFocusRef={initialFocusRef}
+													placement='bottom'
+													>
+													<PopoverTrigger>
+													<Button variant='solid' colorScheme='blue'>
+														Share
+													</Button>
+														</PopoverTrigger>
+														<PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
+															<PopoverHeader pt={4} fontWeight='bold' border='0'>
+																Share Your NFT
+															</PopoverHeader>
+															<PopoverArrow />
+															<PopoverCloseButton />
+															<PopoverBody>
+																Share your NFT the different platforms
+															</PopoverBody>
+															<PopoverFooter
+															border='0'
+															display='flex'
+															alignItems='center'
+															justifyContent='space-between'
+															pb={4}
+															>
+															<Box fontSize='sm'>Step 2 of 4</Box>
+															<ButtonGroup size='sm'>
+																<Button colorScheme='green'>Setup Email</Button>
+															</ButtonGroup>
+															</PopoverFooter>
+														</PopoverContent>
+													</Popover>
+
 												<Button variant='ghost' colorScheme='blue' onClick={()=> activeModal(token)}>
 													Transfer
 												</Button>
@@ -300,16 +339,24 @@ export default function Home() {
 										</Card>
 									</WrapItem>
 									<FormControl minW={{base: 'max-content', }}>
-										<Text mb='2'>Before transferring let's make sure:</Text>
-										<Box px="2" display="flex" alignItems="center" color={red ? "gray.800" : "red.500"}>
-											{red ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
-											<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{red ? "Network connected" : "Network offline"}</Text>
-										</Box>
-										<Spacer />
-										<Box px="2" display="flex" alignItems="center" color={usuario ? "gray.800" : "red.500"}>
-											{usuario ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
-											<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{usuario ? "Wallet connected" : "Wallet offline"}</Text>
-										</Box>
+										<Text mb='3'>Before transferring let's make sure:</Text>
+										<Tag color='white' bg={red?'green.500':'red.400'}>
+											{red?
+												<CheckIcon fill='white' mr='2' />
+											:
+												<SmallCloseIcon fill='white' mr='2' />
+											}
+											<TagLabel>{red ? "Network connected" : "Network offline"}</TagLabel>
+										</Tag>
+										<Spacer my='3'/>
+										<Tag color='white' bg={usuario?'green.500':'red.400'}>
+											{usuario?
+												<CheckIcon fill='white' mr='2' />
+											:
+												<SmallCloseIcon fill='white' mr='2' />
+											}
+											<TagLabel>{usuario ?  "Wallet connected" : "Wallet offline"}</TagLabel>
+										</Tag>
 										<FormLabel mt='4'>Enter the address to transfer</FormLabel>
 										<Input ref={initialRef} placeholder='0x735...0x0' />
 									</FormControl>
