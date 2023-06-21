@@ -103,7 +103,3 @@ const UserState = ({ children }: any) => {
 };
 
 export default UserState;
-function toast(arg0: { title: string; status: string; duration: number; isClosable: boolean; variant: string; position: string; }) {
-	throw new Error("Function not implemented.");
-}
-

@@ -1,46 +1,58 @@
 import {
-	Badge,
-	Box,
-	Button,
-	ButtonGroup,
-	Card,
-	CardBody,
-	CardFooter,
-	Divider,
-	Flex,
-	FormControl,
-	FormLabel,
-	Heading,
-	Image,
-	Input,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	ModalOverlay,
-	Popover,
-	PopoverArrow,
-	PopoverBody,
-	PopoverCloseButton,
-	PopoverContent,
-	PopoverFooter,
-	PopoverHeader,
-	PopoverTrigger,
-	Spacer,
-	Stack,
-	StackDivider,
-	Stat,
-	StatArrow,
-	StatHelpText,
-	StatNumber,
-	Tag,
-	TagLabel,
-	Text,
-	Wrap,
-	WrapItem,
-	useDisclosure
+    Avatar,
+    AvatarBadge,
+    Badge,
+    Box,
+    Button,
+    ButtonGroup,
+    Card,
+    CardBody,
+    CardFooter,
+    Container,
+    Divider,
+    Flex,
+    FormControl,
+    FormLabel,
+    Heading,
+    Image,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    NumberDecrementStepper,
+    NumberIncrementStepper,
+    NumberInput,
+    NumberInputField,
+    NumberInputStepper,
+    Popover,
+    PopoverArrow,
+    PopoverBody,
+    PopoverCloseButton,
+    PopoverContent,
+    PopoverFooter,
+    PopoverHeader,
+    PopoverTrigger,
+    Select,
+    Spacer,
+    Stack,
+    StackDivider,
+    Stat,
+    StatArrow,
+    StatHelpText,
+    StatNumber,
+    Tag,
+    TagLabel,
+    Text,
+    VStack,
+    Wrap,
+    WrapItem,
+    useDisclosure
 } from "@chakra-ui/react";
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -57,7 +69,7 @@ import { ethers } from "ethers";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+export default function Profile() {
 	// ESTADOS
 	const [tokens, setTokens] = useState<any>([])
 	const [data, setData] = useState<{day: number, percent: number, total: number, finalTotal: number}>({
@@ -75,146 +87,129 @@ export default function Home() {
 	const userContext = useContext(UserContext);
 	const { usuario, red, actualizarRed } = userContext;
 
-	// Ordenar los datos
-	const orderData = (arrTokens: any)=>{
-		let total: number[] = [0,0,0,0]
-		let arrDates: number[][] = []
-
-		// Variable tipo fecha - Hoy
-		let t = Date.now()
-		let today = new Date(t)
-
-		// Recorremos los tokens
-		arrTokens.map((token: any, i: number)=>{
-			let { percent, profit, final} = computeTableValues(parseInt(token[2], 10), parseInt(token[3], 10))
-
-			total[1] += percent
-			total[2] += final
-			total[3] += (profit * parseInt(token[3], 10)) + parseInt(token[2], 10)
-		
-			// Asignamos las fechas de creacion de cada token
-			let dateToken = new Date(parseInt(token[4],10))
-			let diff = today.getTime() - dateToken.getTime()
-			 
-			arrDates.push([ Math.trunc(diff/(1000*60*60*24)) ,  parseInt(token[3]), profit/365, ((profit/365) * Math.trunc(diff/(1000*60*60*24))) ])
-			// arrDates.push([dateToken.getDate(), dateToken.getMonth() + 1, dateToken.getFullYear(), dateToken.getHours() , parseInt(token[3])])
-			console.log('data Dates', dateToken.getUTCDate(), dateToken.getDate(),'/', dateToken.getMonth() + 1,'/', dateToken.getFullYear(), dateToken.getHours(),':',dateToken.getMinutes() )
-		})
-
-		let day: number = 0
-		arrDates.forEach((arr: number[], i: number)=>{
-			day += arr[3]
-		})
-
-
-		setData({...data, percent: total[1], total: total[2], finalTotal: total[3], day})
-		console.log("data Dates:", arrDates)
-	}
-
-	// Computa los calculos
-	const computeTableValues = (ammount: number, year: number) => {
-		let a:number = 0
-		let b: number = 0
-
-		// Cantidad
-		if(ammount > 0 && ammount <= 1000){
-			a = 0.001
-		}else if(ammount > 1000 && ammount <= 10000){
-			a = 0.002
-		}else if(ammount > 10000 && ammount <= 50000){
-			a = 0.004
-		}else if(ammount > 50000 && ammount <= 100000){
-			a = 0.006
-		}else if(ammount > 100000 && ammount <= 500000){
-			a = 0.008
-		}else if(ammount > 500000 && ammount <= 1000000){
-			a = 0.01
-		}else {
-			a = 0
-		}
-
-		// Años
-		if(year > 0 && year <= 1){
-			b = 0.001
-		}else if(year > 1 && year <= 2){
-			b = 0.002
-		}else if(year > 2 && year <= 3){
-			b = 0.004
-		}else if(year > 3 && year <= 4){
-			b = 0.006
-		}else if(year > 4 && year <= 5){
-			b = 0.008
-		}else if(year > 5 && year <= 10){
-			b = 0.01
-		}else if(year > 10 && year <= 15){
-			b = 0.012
-		}else if(year > 15 && year <= 20){
-			b = 0.014
-		}else {
-			b = 0
-		}
-
-		let percent: number = a + b;
-		let profit: number = (ammount * percent)
-		let final: number = (ammount * percent)+ ammount;
-		return { percent, profit, final}
-	}
-	
-	useEffect(()=>{
-		// Obtener tokens
-		const {ethereum}: any = window
-	
-		// Da error al iniciar desde 0
-		// try {
-			if(ethereum){
-				let provider = new ethers.providers.Web3Provider(ethereum)
-				// Signer necesario para traer el contrato
-				let signer = provider.getSigner()
-				let contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken721.abi, signer)
-				console.log("-- contract --", contract)
-				contract.getKirbankTokensByOwner(usuario).then((tokens: any) =>{
-					console.log("-- tokens: ", tokens)
-					setTokens([...tokens])
-					orderData(tokens)
-				})
-			}
-		// }catch(e){
-			// alert('Error, unable: Intenta recargar la pagina')
-			// console.log('Error inicial:', e)
-		// }
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	},[])
-
 	// Activa el modal
 	const activeModal = (token: any)=>{
 		console.log("token recibido:", token, typeof token)
 		setToken(token)
 		setOptModal(true)
 	}
+    let coin = "ETH"
+
+    // Cambios input
+	const handleChange = (event: any, op: string) => {
+		let valor: any = 0 
+		valor = event.target.value 
+		// if(valor == "") valor = 0
+
+        console.log("Campos de entrada :)", valor, op)
+		// switch(op){
+		// 	case "ammount":
+		// 		break;
+		// 	case "year":
+		// 		break;
+		// 	case "link":
+		// 		break;
+		// 	default:
+		// 		break
+		// }
+	}
 
 	return (
 		<Nav>
 			<Box minWidth="full" maxWidth="container.xl" h="max" my={{base: 8, md:12}}>
 				{/* Texto y data */}
-				<Flex flexDirection={{ base: "column", sm: "column", md: "column", lg: "row" }} align="center" justify="space-between" w="full" >
-					<Box>
-						<Heading>Kirbank Token ({tokens.length}/50)</Heading>
-						<Text>24 day, 7 hrs, 9 min to next rebase</Text>
+				<Flex flexDirection={{ base: "column", sm: "column", md: "column", lg: "row" }} align="center" justify="center" w="full" >
+					<Flex>
+                        <Avatar size="full" width={{ base: "150px" }} name="Alex Gallardo" src="https://bit.ly/dan-abramov">
+                        </Avatar>
+                    </Flex>
+                    <Box mx='10'>
+						<Heading>Alex Gallardo</Heading>
+						<Text>gallardoalex069@gmail.com</Text>
 					</Box>
-					<Flex flexDirection="row" align="center" justify="space-between" rounded="md" bg="green.600" px={6} py={2} minW={{ base: "100%", lg: "50%" }} mt={{ base: 8, lg: 0 }}>
-						{/* <Heading color="#fff">$ 100.00</Heading> */}
-						<Stat color="white"  >
-							{/* <StatLabel>Feb 12 - Feb 28</StatLabel> */}
-							<StatNumber>$ {data.day.toFixed(2)}</StatNumber>
-							<StatHelpText  >
-								<StatArrow type="increase" />
-								{data.percent.toFixed(3)} %
-							</StatHelpText>
-						</Stat>
-						<Text color="#fff">Your earnings / day</Text>
-					</Flex>
 				</Flex>
+                
+                {/* BODY - CONTAINER */}
+				<Container mt={12} mb='500px'>
+					<VStack
+						divider={<StackDivider borderColor="gray.400" />}
+						spacing={5}
+						align="stretch"
+						w={{ base: "full" }}
+						mt={{ base: 3, lg: 0 }}
+						rounded="lg"
+						overflow="hidden"
+					>
+						<VStack p="2">
+                            {/* NOMBRE */}
+                            <Flex w='full' justify='start'>
+                                <Text>Nombre completo:</Text>
+                            </Flex>
+							<InputGroup>
+								{/* <InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" >$</InputLeftElement> */}
+								<Input value='Alex Gallardo' placeholder="" type='text' onChange={(e)=>handleChange(e, 'ammount')}/>
+								{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
+							</InputGroup>
+                            
+                            {/* EMAIL */}
+                            <Flex w='full' justify='start'>
+                                <Text>Correo electronico:</Text>
+                            </Flex>
+							<InputGroup>
+								<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" >@</InputLeftElement>
+								<Input value='gallardoalex069@gmail.com' placeholder="@gmail.com" type='text' onChange={(e)=>handleChange(e, 'ammount')}/>
+								{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
+							</InputGroup>
+                            {/* NO CUENTA */}
+                            <Flex w='full' justify='start'>
+                                <Text>Wallet:</Text>
+                            </Flex>
+							<Box w='full'>
+								<InputGroup>
+									<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" >i</InputLeftElement>
+									<Input value='0xA7Bd319F1EA641299B2E38F30653763fd545F4Ea' placeholder="/..." onChange={(e)=>handleChange(e, 'link')} />
+								</InputGroup>
+							</Box>
+                            {/* NO CUENTA */}
+                            <Flex w='full' justify='start'>
+                                <Text>Número de cuenta:</Text>
+                            </Flex>
+							<InputGroup>
+								{/* <InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" >$</InputLeftElement> */}
+								<Input value='GB33BUKB20201555555555' placeholder="GB33BU...555" type='text' onChange={(e)=>handleChange(e, 'ammount')}/>
+								{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
+							</InputGroup>
+                            {/* CUENTA */}
+                            <Flex w='full' justify='start'>
+                                <Text>Tipo de cuenta</Text>
+                            </Flex>
+							<Stack direction={{base:'column', md: 'row'}} divider={<StackDivider display={{base:'none', md: 'flex'}} borderColor="gray.400" />} spacing={0} align="center" w="full" overflow="hidden">
+								<Select value={coin} pr={{base:'0', md: '2'}}  color="gray.500" onChange={(e)=>handleChangeSelect(e)} flex={{base:'1'}} >
+									<option value='ETH'>Monetaria</option>
+									<option value='BTC'>Ahorro</option>
+									{/* <option value='matic'>Polygon</option> */}
+								</Select>
+							</Stack>
+                            {/* GUARDAR CAMBIOS */}
+                            <Flex w='full' justify='start' mt='20px'>
+                                <Button
+                                    isLoading={false}
+                                    loadingText="Guardando"
+                                    bg="blue.600"
+                                    variant="solid"
+                                    color="white"
+                                    spinnerPlacement="end"
+                                    w="full"
+                                    mt='30px'
+                                >
+                                    Guardar cambios
+                                </Button>
+                            </Flex>
+						</VStack>
+						
+						
+					</VStack>
+				</Container>
 
 				{/* Contenido y tablas */}
 				<Stack direction="column" mt={{base: 8, lg: 12}}>
@@ -257,7 +252,6 @@ export default function Home() {
 												<Text  noOfLines={1}>investment: <Badge colorScheme='green'>$ {token.cost}</Badge></Text>
 												<Text  noOfLines={1}>time: <Badge colorScheme='blue'>{token.yearsSet} years</Badge></Text>
 												<Text  noOfLines={1}>created: <Badge colorScheme='orange'>{`${dateToken.getDate()} / ${dateToken.getMonth() + 1} / ${dateToken.getFullYear()}`}</Badge></Text>
-												<Text  noOfLines={1}>percentage: <Badge colorScheme='purple'>{computeTableValues(parseInt(token.cost,10), parseInt(token.yearsSet,10) ).percent.toFixed(3)} %</Badge></Text>
 											</Stack>
 										</CardBody>
 										<Divider />
@@ -338,7 +332,6 @@ export default function Home() {
 												<Heading size='sm'>Kirbank Token #KBT</Heading>
 													<Text >investment: <Badge colorScheme='green'>$ {isToken.cost}</Badge></Text>
 													<Text >time: <Badge colorScheme='blue'>{isToken.yearsSet} years</Badge></Text>
-													<Text >percentage: <Badge colorScheme='purple'>{computeTableValues(parseInt(isToken.cost,10), parseInt(isToken.yearsSet,10) ).percent.toFixed(3)} %</Badge></Text>
 												</Stack>
 											</CardBody>
 										</Card>

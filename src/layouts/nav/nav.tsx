@@ -17,21 +17,22 @@ import {
 	Spacer,
 	Stack
 } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
-import { useState } from "react";
 
+import CalculatorIcon from "@/icons/calculator";
+import DiscordIcon from "@/icons/discord";
+import DocsIcon from "@/icons/docs";
+import FlashIcon from "@/icons/flash";
 import Footer from "../footer/footer";
+import GithubIcon from "@/icons/github";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import Head from "next/head";
 import Header from "../header/header";
+import HomeIcon from "@/icons/home";
 import Link from "next/link";
 import WalletButton from "@/components/wallet-buttton/wallet-button";
+import WalletIcon from "@/icons/wallet";
 import { useRouter } from "next/router";
-import CalculatorIcon from "@/icons/calculator";
-import HomeIcon from "@/icons/home";
-import FlashIcon from "@/icons/flash";
-import DocsIcon from "@/icons/docs";
-import GithubIcon from "@/icons/github";
-import DiscordIcon from "@/icons/discord";
+import { useState } from "react";
 
 export default function Nav({ children }: any) {
 	const [isDrawer, setDrawer] = useState(false);

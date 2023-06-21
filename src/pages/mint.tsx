@@ -17,26 +17,26 @@ import {
 	NumberInput,
 	NumberInputField,
 	NumberInputStepper,
+	Select,
 	Spacer,
+	Stack,
 	StackDivider,
+	Tag,
+	TagLabel,
 	Text,
 	VStack,
 	useToast,
-	Select,
-	Stack,
-	TagLabel,
-	Tag,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
+import BitcoinIcon from '../icons/bitcoin';
+import EthereumIcon from "@/icons/ethereum";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import KirbankToken from '@/utils/abi/KirbankToken.json'
 import Nav from "@/layouts/nav/nav";
 import { abiKirbankTokenAddress } from "config";
 import { ethers } from "ethers";
-import BitcoinIcon from '../icons/bitcoin';
-import EthereumIcon from "@/icons/ethereum";
 
 interface KirbankToken {
 	imageUrl: string
@@ -245,9 +245,9 @@ export default function MintIndex() {
 			{/* <main className={styles.main}> */}
 			<Box minWidth="full" maxWidth="container.xl" h="max" mt={12}>
 				{/* HEADING */}
-				<Flex flexDirection="column" align="cstart" justify="start">
+				<Flex flexDirection="column" align="start" justify="start">
 					<Box>
-						<Heading>Kirbank Minting</Heading>
+						<Heading as='h2'>Kirbank Minting</Heading>
 						<Text>Join us and become part of the excitement of creating a unique and valuable NFT!</Text>
 					</Box>
 				</Flex>

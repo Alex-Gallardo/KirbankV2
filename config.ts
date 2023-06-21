@@ -1,2 +1,2 @@
-export const abiKirbankTokenAddress = "0x21E3b1F130bc46f11c4b52b8E128690ac6945e46"
+export const abiKirbankTokenAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
 	

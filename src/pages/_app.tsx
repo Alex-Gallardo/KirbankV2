@@ -16,7 +16,6 @@ export default function App({ Component, pageProps }: AppProps) {
 	const toast = useToast();
 
 	console.log('- primera carga app -')
-	// console.log('primera carga app 2', res)
 
 	// Valida que el browser tenga instalado Metamask
 	const checkIfMetamaskIsConnected = async () => {
@@ -65,32 +64,32 @@ export default function App({ Component, pageProps }: AppProps) {
 						});
 					}, 1000);
 				}
-
-				// Metodo de Metamask cuando cambiamos de RED (Cadena)
-				// ethereum.on()
-				ethereum.on("chainChanged", (networkID: any) => {
-					console.log("NetworkEthereum", networkID, parseInt(networkID));
-					if (parseInt(networkID) == 5) {
-						setTimeout(() => {
-							toast({
-								title: "Cambio red correcta!",
-								status: "success",
-								duration: 1250,
-								variant: "solid",
-								position: "top-right"
-							});
-						}, 1000);
-					} else {
+			}
+			
+			// Metodo de Metamask cuando cambiamos de RED (Cadena)
+			// ethereum.on()
+			ethereum.on("chainChanged", (networkID: any) => {
+				console.log("NetworkEthereum", networkID, parseInt(networkID));
+				if (parseInt(networkID) == 5) {
+					setTimeout(() => {
 						toast({
-							title: "Cambio red incorrecta!",
-							status: "warning",
+							title: "Cambio red correcta!",
+							status: "success",
 							duration: 1250,
 							variant: "solid",
 							position: "top-right"
 						});
-					}
-				});
-			}
+					}, 1000);
+				} else {
+					toast({
+						title: "Cambio red incorrecta!",
+						status: "warning",
+						duration: 1250,
+						variant: "solid",
+						position: "top-right"
+					});
+				}
+			});
 		}
 	};
 

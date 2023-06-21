@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardBody, Center, Heading, Image, Stack, StackDivider, Text, VStack, useToast } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, Center, Heading, Image, Stack, StackDivider, Flex, Text, VStack, useToast } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 
 import CalculatorIcon from "@/icons/calculator";
@@ -37,8 +37,8 @@ const LoginIndex = () => {
 			// eth_requestAccounts: Solicita las cuentas Metamask
 			const accounts = await ethereum.request({ method: "eth_requestAccounts" });
 			const provider = new ethers.providers.Web3Provider(ethereum);
-			const signer = provider.getSigner();
-			console.log("- Signer", signer.provider);
+			// const signer = provider.getSigner();
+			// console.log("- Signer", accounts);
 			agregarUsuario(accounts[0]);
 			// let addressWallet: string = `${accounts[0]?.substr(0, 6)}...${accounts[0]?.substr(-4)}`;
 			// setText(accounts[0]);
@@ -99,54 +99,64 @@ const LoginIndex = () => {
 					Join us and become part of the excitement of creating a unique and valuable NFT! We mint an NFT with an exclusive design and an opportunity to generate recurring income.
 					Dont miss this opportunity to own a unique and valuable digital asset! Secure your NFT now!
 				</Text>
-				{/* CARD #1 */}
-				<Card
-					direction='row'
-					overflow='hidden'
-					variant='elevated'
-					w='full'
-					maxW='4xl'
-					onClick={connectMetamask}
-					border='2px'
-					borderColor='blue.300'
-					>
-						<Center w={{base: '50px', lg: '120px'}} h={{base: '50px', lg: '120px'}} >
-							<Center w={{base: '50px', lg:"60px"}} h={{base: '50px', lg:"60px"}} bg='blue.400' borderRadius={{base: 2, md: 4, lg: 6}} >
-								<PersonalIcon w={{base: '20px', lg:"25px"}} h={{base: '20px', lg:"25px"}} fill='white'  />
-							</Center>
-						</Center>
-						<Stack>
-							<CardBody  p={0} display='flex' flexDir='column' alignItems='start' justifyContent='center' px={{base:4, lg: 0}} paddingRight={{base: 0, lg: 6}}>
-								<Heading size={{base: "sm", lg:'md'}}>Personal </Heading>
+				<Flex w='100%'>
 
-								<Text py='2' display={{base: 'none', lg: "flex"}}>
-									Connect with your wallet and see all your financial data per day
-								</Text>
-							</CardBody>
-						</Stack>
-				</Card>
-				{/* CARD #2 */}
-				<Card
-					direction='row'
-					overflow='hidden'
-					w='full'
-					maxW='4xl'
-					onClick={()=> router.push('/calculator')}
-					>
-						<Center w={{base: '50px', lg: '120px'}} h={{base: '50px', lg: '120px'}} >
-							<Center w={{base: '50px', lg:"60px"}} h={{base: '50px', lg:"60px"}} bg='blue.400' borderRadius={{base: 2, md: 4, lg: 6}} >
-								<CalculatorIcon w={{base: '20px', lg:"25px"}} h={{base: '20px', lg:"25px"}} fill='white'  />
+				<Flex w='50%' direction='column'>
+					{/* CARD #1 */}
+					<Card
+						direction='row'
+						overflow='hidden'
+						variant='elevated'
+						w='full'
+						maxW='4xl'
+						onClick={connectMetamask}
+						border='2px'
+						borderColor='blue.300'
+						>
+							<Center w={{base: '50px', lg: '120px'}} h={{base: '50px', lg: '120px'}} >
+								<Center w={{base: '50px', lg:"60px"}} h={{base: '50px', lg:"60px"}} bg='blue.400' borderRadius={{base: 2, md: 4, lg: 6}} >
+									<PersonalIcon w={{base: '20px', lg:"25px"}} h={{base: '20px', lg:"25px"}} fill='white'  />
+								</Center>
 							</Center>
-						</Center>
-						<Stack>
-							<CardBody p={0} display='flex' flexDir='column' alignItems='start' justifyContent='center' px={{base: 4, lg: 0}}  paddingRight={{base: 0, lg: 6}}>
-								<Heading size={{base: "sm", lg:'md'}}>Calculator</Heading>
-								<Text py='2' display={{base: 'none', lg: "flex"}}>
-									Make your investment calculations in real time
-								</Text>
-							</CardBody>
-						</Stack>
-				</Card>
+							<Stack>
+								<CardBody  p={0} display='flex' flexDir='column' alignItems='start' justifyContent='center' px={{base:4, lg: 0}} paddingRight={{base: 0, lg: 6}}>
+									<Heading size={{base: "sm", lg:'md'}}>Personal </Heading>
+
+									<Text py='2' display={{base: 'none', lg: "flex"}}>
+										Connect with your wallet and see all your financial data per day
+									</Text>
+								</CardBody>
+							</Stack>
+					</Card>
+					{/* CARD #2 */}
+					<Card
+						direction='row'
+						overflow='hidden'
+						w='full'
+						maxW='4xl'
+						onClick={()=> router.push('/calculator')}
+						>
+							<Center w={{base: '50px', lg: '120px'}} h={{base: '50px', lg: '120px'}} >
+								<Center w={{base: '50px', lg:"60px"}} h={{base: '50px', lg:"60px"}} bg='blue.400' borderRadius={{base: 2, md: 4, lg: 6}} >
+									<CalculatorIcon w={{base: '20px', lg:"25px"}} h={{base: '20px', lg:"25px"}} fill='white'  />
+								</Center>
+							</Center>
+							<Stack>
+								<CardBody p={0} display='flex' flexDir='column' alignItems='start' justifyContent='center' px={{base: 4, lg: 0}}  paddingRight={{base: 0, lg: 6}}>
+									<Heading size={{base: "sm", lg:'md'}}>Calculator</Heading>
+									<Text py='2' display={{base: 'none', lg: "flex"}}>
+										Make your investment calculations in real time
+									</Text>
+								</CardBody>
+							</Stack>
+					</Card>
+				</Flex>
+				<Flex w='50%'>
+
+					
+				</Flex>
+				</Flex>
+				
 
 				{/* <WalletButton></WalletButton> */}
 				{/* <Button background="#DBF227">
