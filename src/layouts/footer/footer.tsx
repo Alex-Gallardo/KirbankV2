@@ -29,7 +29,7 @@ export default function Footer() {
 				variant: "solid",
 				position: "bottom-right"
 			});
-			router.push("/login");
+			// router.push("/login");
 			return;
 		} else {
 			// RED ESTABLECIDA
@@ -76,7 +76,7 @@ export default function Footer() {
 				}
 			});
 		}
-	},[ actualizarRed, router, toast]);
+	},[ actualizarRed, toast]);
 
 	useEffect(() => {
 		checkRedIsRunning()

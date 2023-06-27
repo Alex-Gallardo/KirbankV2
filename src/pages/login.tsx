@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardBody, Center, Heading, Image, Stack, StackDivider, Flex, Text, VStack, useToast } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, Center, Flex, Heading, Image, Stack, StackDivider, Text, VStack, useToast } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 
 import CalculatorIcon from "@/icons/calculator";
@@ -12,7 +12,7 @@ const LoginIndex = () => {
 	// STATE
 	const router = useRouter();
 	const toast = useToast();
-	
+
 	// CONTEXT
 	const userContext = useContext(UserContext);
 	const { usuario, agregarUsuario, actualizarRed } = userContext;
@@ -23,8 +23,8 @@ const LoginIndex = () => {
 			const { ethereum }: any = window;
 			if (!ethereum) {
 				toast({
-					title: "Conecta Metamask.",
-					description: "Crea una wallet para conectarte con nosotros",
+					title: "Instala Metamask",
+					description: "Crea una wallet para conectarte a la blockchain con nosotros",
 					status: "error",
 					duration: 2000,
 					isClosable: true,
@@ -56,9 +56,8 @@ const LoginIndex = () => {
 			// Redirect to
 			router.push("/");
 		} catch (err: any) {
-			console.error("Ha ocurrido un error", err);
 			toast({
-				title: "Ha ocurrido un error",
+				title: "Ha ocurrido un error de conexion con Metamask",
 				description: err,
 				status: "error",
 				duration: 2000,
@@ -66,6 +65,7 @@ const LoginIndex = () => {
 				variant: "solid",
 				position: "bottom"
 			});
+			console.error("Ha ocurrido un error", err);
 		}
 	};
 
@@ -74,94 +74,62 @@ const LoginIndex = () => {
 			<Box w={{ base: "100vw", md: "100%", lg: "30%" }} h={{ base: "30%", lg: "100%" }}>
 				{/* <div className="background-pattern" style={{ width: "100%", height: "100%" }}></div> */}
 				{/* divider={<StackDivider borderColor='gray.200' /> }  */}
-				<VStack 
-					w='full' 
-					h='full'
-					className="background-pattern"
-					spacing={4}
-					align='stretch' 
-					justify='space-between'
-					p={8}>
-						<Heading color='white'>Kirbank</Heading>
-						{/* <VStack align='start' mr={2}>
+				<VStack w="full" h="full" className="background-pattern" spacing={4} align="stretch" justify="space-between" p={8}>
+					<Heading color="white">Kirbank</Heading>
+					{/* <VStack align='start' mr={2}>
 							<Heading color='white'>Kirbank NFT</Heading>
 							<Text color='white' fontSize={{base: "md", md:'lg'}}>
 								Join us and become part of the excitement of creating a unique and valuable NFT!
 							</Text>
 						</VStack> */}
-						<Text color='white' as='b'>1 KBTK = $1.24</Text>
-  				</VStack>
+					<Text color="white" as="b">
+						1 KBTK = $1.24
+					</Text>
+				</VStack>
 			</Box>
-			<VStack w="full" h={{base:"auto", lg: 'full'}} align="flex-start" justify={{ base: "start", lg: "center" }} px={10} py={5} spacing={6}>
+			<VStack w="full" h={{ base: "auto", lg: "full" }} align="flex-start" justify={{ base: "start", lg: "center" }} px={10} py={5} spacing={6}>
 				{/* <Center w='75px' h='75px' bg='yellow.200' borderRadius='full' ></Center> */}
-				<Heading >NFT Collection</Heading>
-				<Text fontSize={{base: "md"}} maxW='5xl' color='gray.500' >
+				<Heading>NFT Collection</Heading>
+				<Text fontSize={{ base: "md" }} maxW="5xl" color="gray.500">
 					Join us and become part of the excitement of creating a unique and valuable NFT! We mint an NFT with an exclusive design and an opportunity to generate recurring income.
 					Dont miss this opportunity to own a unique and valuable digital asset! Secure your NFT now!
 				</Text>
-				<Flex w='100%'>
-
-				<Flex w='50%' direction='column'>
-					{/* CARD #1 */}
-					<Card
-						direction='row'
-						overflow='hidden'
-						variant='elevated'
-						w='full'
-						maxW='4xl'
-						onClick={connectMetamask}
-						border='2px'
-						borderColor='blue.300'
-						>
-							<Center w={{base: '50px', lg: '120px'}} h={{base: '50px', lg: '120px'}} >
-								<Center w={{base: '50px', lg:"60px"}} h={{base: '50px', lg:"60px"}} bg='blue.400' borderRadius={{base: 2, md: 4, lg: 6}} >
-									<PersonalIcon w={{base: '20px', lg:"25px"}} h={{base: '20px', lg:"25px"}} fill='white'  />
-								</Center>
-							</Center>
-							<Stack>
-								<CardBody  p={0} display='flex' flexDir='column' alignItems='start' justifyContent='center' px={{base:4, lg: 0}} paddingRight={{base: 0, lg: 6}}>
-									<Heading size={{base: "sm", lg:'md'}}>Personal </Heading>
-
-									<Text py='2' display={{base: 'none', lg: "flex"}}>
-										Connect with your wallet and see all your financial data per day
-									</Text>
-								</CardBody>
-							</Stack>
-					</Card>
-					{/* CARD #2 */}
-					<Card
-						direction='row'
-						overflow='hidden'
-						w='full'
-						maxW='4xl'
-						onClick={()=> router.push('/calculator')}
-						>
-							<Center w={{base: '50px', lg: '120px'}} h={{base: '50px', lg: '120px'}} >
-								<Center w={{base: '50px', lg:"60px"}} h={{base: '50px', lg:"60px"}} bg='blue.400' borderRadius={{base: 2, md: 4, lg: 6}} >
-									<CalculatorIcon w={{base: '20px', lg:"25px"}} h={{base: '20px', lg:"25px"}} fill='white'  />
-								</Center>
-							</Center>
-							<Stack>
-								<CardBody p={0} display='flex' flexDir='column' alignItems='start' justifyContent='center' px={{base: 4, lg: 0}}  paddingRight={{base: 0, lg: 6}}>
-									<Heading size={{base: "sm", lg:'md'}}>Calculator</Heading>
-									<Text py='2' display={{base: 'none', lg: "flex"}}>
-										Make your investment calculations in real time
-									</Text>
-								</CardBody>
-							</Stack>
-					</Card>
+				<Flex w="100%" align='center' justify='center' mt={{base: '0', md:'10'}}>
+					<Flex w={{base: "100%",lg:"50%"}} direction="column">
+						{/* CARD #1 */}
+						<Card direction="row" overflow="hidden" variant="elevated" w="full" maxW="4xl" mb="5">
+							<CardBody px="4" py="3" display="flex" flexDir="row" alignItems="center" justifyContent="start">
+								<Image
+											src='https://cdn.icon-icons.com/icons2/836/PNG/512/Google_icon-icons.com_66793.png'
+											alt='Google connect'
+											borderRadius='lg'
+											w={{ base: "20px", lg: "25px" }} h={{ base: "20px", lg: "25px" }}
+											/>
+								<Text pl="4" color='gray.600'>
+									Connect with gmail
+								</Text>
+							</CardBody>
+						</Card>
+						{/* CARD #2 */}
+						<Card direction="row" overflow="hidden" variant="elevated" w="full" maxW="4xl" mb="5" onClick={() => router.push("/")}>
+							<CardBody px="4" py="3" display="flex" flexDir="row" alignItems="center" justifyContent="start">
+								<PersonalIcon w={{ base: "20px", lg: "25px" }} h={{ base: "20px", lg: "25px" }} fill="gray.300" />
+								<Text pl="4" color='gray.600'>
+									Connect your account
+								</Text>
+							</CardBody>
+						</Card>
+						{/* CARD #3 */}
+						<Card direction="row" overflow="hidden" variant="elevated" w="full" maxW="4xl" mb="5" onClick={() => router.push("/calculator")}>
+							<CardBody px="4" py="3" display="flex" flexDir="row" alignItems="center" justifyContent="start">
+								<CalculatorIcon w={{ base: "20px", lg: "25px" }} h={{ base: "20px", lg: "25px" }} fill="gray.300" />
+								<Text pl="4" color='gray.600'>
+									Make your investment calculations in real time
+								</Text>
+							</CardBody>
+						</Card>
+					</Flex>
 				</Flex>
-				<Flex w='50%'>
-
-					
-				</Flex>
-				</Flex>
-				
-
-				{/* <WalletButton></WalletButton> */}
-				{/* <Button background="#DBF227">
-					<Link href="/">Connect your wallet</Link>
-				</Button> */}
 			</VStack>
 		</Stack>
 	);

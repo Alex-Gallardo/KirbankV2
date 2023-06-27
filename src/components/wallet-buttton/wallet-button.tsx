@@ -2,15 +2,15 @@ import { Button, Icon, Text, useToast } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import UserContext from "@/context/UserContext";
+import WalletIcon from "@/icons/wallet";
 import { ethers } from "ethers";
 import useCheckMetamask from "@/hooks/useCheckMetamask";
 import { useRouter } from "next/router";
 import useTruncatedAddress from '@/hooks/useTruncatedAddress';
-import WalletIcon from "@/icons/wallet";
 
 const WalletButton = ({ ...props }: any) => {
 	// STATE
-	const [text, setText] = useState("0xd123...45F");
+	const [text, setText] = useState(" ");
 	const router = useRouter();
 	const toast = useToast();
 	
@@ -22,7 +22,6 @@ const WalletButton = ({ ...props }: any) => {
 	// console.log("primera carga wallet", usuario)
 	useEffect(()=>{
 		if(usuario) setText(dirWallet)
-		else setText("Connect your wallet")
 	},[usuario, dirWallet])
 
 	// Funcion para conectar Metamask
@@ -78,9 +77,9 @@ const WalletButton = ({ ...props }: any) => {
 	};
 
 	return (
-		<Button leftIcon={<WalletIcon/>} onClick={connectMetamask} background="#DBF227" {...props}>
+		<Button leftIcon={<WalletIcon/>} onClick={connectMetamask} background={text===" "?"#EDF2F7":"#DBF227"} {...props}>
 			<Text noOfLines={1} fontSize={{ base: "sm", lg: "md" }}>
-				{text}
+				{text===" "?"Conecta tu wallet": text}
 			</Text>
 		</Button>
 	);

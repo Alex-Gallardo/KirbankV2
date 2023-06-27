@@ -77,9 +77,9 @@ const UserState = ({ children }: any) => {
 
 	useEffect(() => {
 		console.log("Entro a UserState")
-		if(state.usuario == undefined){
-			router.pathname != "/login" ? router.replace("/login") : "";
-		}
+		// if(state.usuario == undefined){
+		// 	router.pathname != "/login" ? router.replace("/login") : "";
+		// }
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

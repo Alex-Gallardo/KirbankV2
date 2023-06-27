@@ -160,31 +160,31 @@ export default function Home() {
 		return { percent, profit, final}
 	}
 	
-	useEffect(()=>{
-		// Obtener tokens
-		const {ethereum}: any = window
+	// useEffect(()=>{
+	// 	// Obtener tokens
+	// 	const {ethereum}: any = window
 	
-		// Da error al iniciar desde 0
-		// try {
-			if(ethereum){
-				let provider = new ethers.providers.Web3Provider(ethereum)
-				// Signer necesario para traer el contrato
-				let signer = provider.getSigner()
-				let contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken721.abi, signer)
-				console.log("-- contract --", contract)
-				contract.getKirbankTokensByOwner(usuario).then((tokens: any) =>{
-					console.log("-- tokens: ", tokens)
-					setTokens([...tokens])
-					orderData(tokens)
-				})
-			}
-		// }catch(e){
-			// alert('Error, unable: Intenta recargar la pagina')
-			// console.log('Error inicial:', e)
-		// }
+	// 	// Da error al iniciar desde 0
+	// 	// try {
+	// 		if(ethereum){
+	// 			let provider = new ethers.providers.Web3Provider(ethereum)
+	// 			// Signer necesario para traer el contrato
+	// 			let signer = provider.getSigner()
+	// 			let contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken721.abi, signer)
+	// 			console.log("-- contract --", contract)
+	// 			contract.getKirbankTokensByOwner(usuario).then((tokens: any) =>{
+	// 				console.log("-- tokens: ", tokens)
+	// 				setTokens([...tokens])
+	// 				orderData(tokens)
+	// 			})
+	// 		}
+	// 	// }catch(e){
+	// 		// alert('Error, unable: Intenta recargar la pagina')
+	// 		// console.log('Error inicial:', e)
+	// 	// }
 
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	},[])
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// },[])
 
 	// Activa el modal
 	const activeModal = (token: any)=>{
@@ -202,7 +202,7 @@ export default function Home() {
 						<Heading>Kirbank Token ({tokens.length}/50)</Heading>
 						<Text>24 day, 7 hrs, 9 min to next rebase</Text>
 					</Box>
-					<Flex flexDirection="row" align="center" justify="space-between" rounded="md" bg="green.600" px={6} py={2} minW={{ base: "100%", lg: "50%" }} mt={{ base: 8, lg: 0 }}>
+					<Flex flexDirection="row" align="center" justify="space-between" rounded="md" bg="cyan.300" px={6} py={2} minW={{ base: "100%", lg: "50%" }} mt={{ base: 8, lg: 0 }}>
 						{/* <Heading color="#fff">$ 100.00</Heading> */}
 						<Stat color="white"  >
 							{/* <StatLabel>Feb 12 - Feb 28</StatLabel> */}
@@ -220,22 +220,22 @@ export default function Home() {
 				<Stack direction="column" mt={{base: 8, lg: 12}}>
 					{/* Data analytics */}
 					<Stack direction={{base: 'column', lg:'row'}} divider={<StackDivider borderColor="gray.200" />} spacing={0} align="stretch" w="full" rounded="md" overflow="hidden" h="full">
-						<Box p={3} bg="yellow.600" color="white" w='full'>
+						<Box p={3} bg="cyan.300" color="white" w='full'>
 							<Text mb={{base: '0', lg:'3'}}>Value percentage total</Text>
 							<Heading>{data.percent.toFixed(3)} %</Heading>
 						</Box>
-						<Box p={3} bg="teal.600" color="white" w='full'>
+						<Box p={3} bg="cyan.400" color="white" w='full'>
 							<Text mb={{base: '0', lg:'3'}}>Profit value per year</Text>
 							<Heading>$ {data.total.toFixed(2)}</Heading>
 						</Box>
-						<Box p={3} bg="pink.600" color="white" w='full'>
+						<Box p={3} bg="cyan.500" color="white" w='full'>
 							<Text mb={{base: '0', lg:'3'}}>Final win value</Text>
 							<Heading>$ {data.finalTotal.toFixed(2)}</Heading>
 						</Box>
 					</Stack>
 					<Box py={5} w='full'>
-						<Tag size='lg' variant='subtle' colorScheme='cyan' py='3' w='full'>
-							<TagLabel as='b'>My NFT</TagLabel>
+						<Tag size='lg' variant='subtle' bg='cyan.600' color='white' py='3' w='full'>
+							<TagLabel as='b'>My NFT's</TagLabel>
 						</Tag>
 					</Box>
 

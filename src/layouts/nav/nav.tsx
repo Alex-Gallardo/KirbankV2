@@ -29,6 +29,7 @@ import Head from "next/head";
 import Header from "../header/header";
 import HomeIcon from "@/icons/home";
 import Link from "next/link";
+import  PersonalIcon  from '@/icons/personal';
 import WalletButton from "@/components/wallet-buttton/wallet-button";
 import WalletIcon from "@/icons/wallet";
 import { useRouter } from "next/router";
@@ -73,6 +74,9 @@ export default function Nav({ children }: any) {
 							<Button colorScheme="gray.500" variant="link" leftIcon={<DocsIcon />} fontSize='xl'>
 								<Link style={{marginLeft: '0.5em'}} href="/docs">Docs</Link>
 							</Button>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<PersonalIcon />} fontSize='xl'>
+								<Link style={{marginLeft: '0.5em'}} href="/profile">Profile</Link>
+							</Button>
 						</Stack>
 						{/* SOCIAL MEDIA */}
 						<Flex justify="space-between" align="start" w="full" px={{ sm: 0, md: 1, lg: 5 }} display={{ base: "none", lg: "flex" }}>
@@ -89,7 +93,7 @@ export default function Nav({ children }: any) {
 							</Box>
 						</Flex>
 						{/* MOBILE VERSION */}
-						<WalletButton display={{ base: "flex", lg: "none" }}></WalletButton>
+						{/* <WalletButton display={{ base: "flex", lg: "none" }}></WalletButton> */}
 						<IconButton variant="outline" display={{ base: "flex", lg: "none" }} aria-label="Menu" icon={<HamburgerIcon />} onClick={() => setDrawer(true)} />
 						{/* DRAWER */}
 						<Drawer isOpen={isDrawer} placement="right" onClose={() => setDrawer(false)}>
@@ -110,6 +114,9 @@ export default function Nav({ children }: any) {
 									</Button>
 									<Button colorScheme="gray.500" variant="link" leftIcon={<DocsIcon />}>
 										<Link href="/docs">Docs</Link>
+									</Button>
+									<Button colorScheme="gray.500" variant="link" leftIcon={<PersonalIcon />}>
+										<Link href="/profile">Profile</Link>
 									</Button>
 								</DrawerBody>
 
