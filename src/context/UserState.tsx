@@ -12,8 +12,8 @@ const UserState = ({ children }: any) => {
 	const router = useRouter();
 
 	// State inicila
-	const initialState: {usuario: string | undefined, nfts: any[], total: number, red:boolean} = {
-		usuario: undefined,
+	const initialState: {user: any, nfts: any[], total: number, red:boolean} = {
+		user: null,
 		nfts: [],
 		total: 0,
 		red: false
@@ -86,7 +86,7 @@ const UserState = ({ children }: any) => {
 	return (
 		<UserContext.Provider
 			value={{
-				usuario: state.usuario,
+				user: state.user,
 				nfts: state.nfts,
 				total: state.total,
 				red: state.red,

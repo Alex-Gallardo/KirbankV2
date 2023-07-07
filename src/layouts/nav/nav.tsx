@@ -121,10 +121,10 @@ export default function Nav({ children }: any) {
 								</DrawerBody>
 
 								<DrawerFooter>
-									<Button variant="outline" mr={3} onClick={() => setDrawer(false)}>
+									<Button variant="outline"  onClick={() => setDrawer(false)}>
 										Cancel
 									</Button>
-									<Button colorScheme="blue">Save</Button>
+									{/* <Button colorScheme="blue">Save</Button> */}
 								</DrawerFooter>
 							</DrawerContent>
 						</Drawer>

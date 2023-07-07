@@ -10,7 +10,7 @@ const useCheckMetamask = ()=>{
 
     // CONTEXT
 	const userContext = useContext(UserContext);
-	const { usuario } = userContext;
+	const { user } = userContext;
     const { ethereum }: any = window;
 
     if (!ethereum) {
@@ -32,11 +32,11 @@ const useCheckMetamask = ()=>{
             position: "top-right"
         });}
     
-    console.log("User useMetamask: ( ", usuario, " )")
+    console.log("User useMetamask: ( ", user, " )")
 
 
-    // Existe usuario
-    if(usuario === undefined){
+    // Existe user
+    if(user === undefined){
         // Si se encuentra en el login
         // if (router.pathname == "/login") {
         // 	// RED ESTABLECIDA
@@ -88,7 +88,7 @@ const useCheckMetamask = ()=>{
         // 	});
         // }
     }else{
-        console.log("Existe usuario useCheckMetamask", usuario)
+        console.log("Existe usuario useCheckMetamask", user)
     }
         
     // }, [])

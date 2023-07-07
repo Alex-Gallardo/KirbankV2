@@ -1,16 +1,12 @@
 import * as React from "react";
 
-import { Box, Container, Divider, Flex, Heading, SimpleGrid, Spacer, Stack, Text, useToast } from "@chakra-ui/react";
+import { Box, Container,  Flex, Spacer,  Text, useToast } from "@chakra-ui/react";
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useCallback, useContext, useEffect } from "react";
 
-import Head from "next/head";
-import Link from "next/link";
 import UserContext from "@/context/UserContext";
-import { useRouter } from "next/router";
 
 export default function Footer() {
-	const router = useRouter();
 	const toast = useToast();
 
 	// CONTEXT
@@ -84,7 +80,7 @@ export default function Footer() {
 
 	return (
 		<Container minWidth="full" h="auto" p={4} borderTop={"2px"} borderColor="gray.200">
-			<Flex flexDirection="row" justify="space-between" align="center" width="full" px={5}>
+			<Flex flexDirection="row" justify="space-between" align="center" width="full" px={{ base: "0",  lg: "5" }}>
 				<Text color="gray.300" fontSize={{ base: "sm", lg: "md" }} noOfLines={1} >
 					© {new Date().getFullYear()} Kirbank all rights reserved
 				</Text>

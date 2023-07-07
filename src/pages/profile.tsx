@@ -20,14 +20,17 @@ import { Inter } from "@next/font/google";
 import Nav from "@/layouts/nav/nav";
 import UserContext from "@/context/UserContext";
 import WalletButton from "@/components/wallet-buttton/wallet-button";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Profile() {
 	// ESTADOS
+	const [image, setImage] = useState<string>("https://bit.ly/dan-abramov")
+
+	// CONTEXT
 	const userContext = useContext(UserContext);
-	const { usuario, red, actualizarRed } = userContext;
+	const { user, red, actualizarRed } = userContext;
 
     // Cambios input
 	const handleChange = (event: any, op: string) => {
@@ -48,18 +51,25 @@ export default function Profile() {
 		// }
 	}
 
+	useEffect(()=>{``
+		console.log('User encontrado context:', user)
+		if(user != null) setImage(user!.photoURL)
+
+	})
+
 	return (
 		<Nav>
+			{console.log('+user', user?.photoURL)}
 			<Box minWidth="full" maxWidth="container.xl" h="max" my={{base: 8, md:12}}>
 				{/* Texto y data */}
 				<Flex flexDirection={{ base: "column", sm: "column", md: "column", lg: "row" }} align="center" justify="center" w="full" >
 					<Flex>
-                        <Avatar size="full" width={{ base: "150px" }} name="Alex Gallardo" src="https://bit.ly/dan-abramov">
+                        <Avatar size="full" width={{ base: "120px" }} name="Alex Gallardo" src={image}>
                         </Avatar>
                     </Flex>
                     <Box mx='10'>
-						<Heading>Alex Gallardo</Heading>
-						<Text>gallardoalex069@gmail.com</Text>
+						<Heading>{user?.displayName}</Heading>
+						<Text>{user?.email}</Text>
 					</Box>
 				</Flex>
                 
@@ -82,7 +92,8 @@ export default function Profile() {
                             </Flex>
 							<InputGroup>
 								{/* <InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" >$</InputLeftElement> */}
-								<Input value='Alex Gallardo' placeholder="" type='text' onChange={(e)=>handleChange(e, 'ammount')}/>
+								{/* <Input value={user?.displayName} placeholder="" type='text' onChange={(e)=>handleChange(e, 'ammount')}/> */}
+								<Input value={user?.displayName} placeholder="" type='text' />
 								{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
 							</InputGroup>
                             {/* EMAIL */}
@@ -91,7 +102,8 @@ export default function Profile() {
                             </Flex>
 							<InputGroup>
 								<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" >@</InputLeftElement>
-								<Input value='gallardoalex069@gmail.com' placeholder="@gmail.com" type='text' onChange={(e)=>handleChange(e, 'ammount')}/>
+								{/* onChange={(e)=>handleChange(e, 'ammount')} */}
+								<Input value='gallardoalex069@gmail.com' placeholder="@gmail.com" type='text' />
 								{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
 							</InputGroup>
 							<Divider pt='4'/>
@@ -104,6 +116,7 @@ export default function Profile() {
                             </Flex>
 							<InputGroup>
 								{/* <InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em" >$</InputLeftElement> */}
+								{/* onChange={(e)=>handleChange(e, 'ammount')} */}
 								<Input placeholder="Industrial..." type='text' onChange={(e)=>handleChange(e, 'ammount')}/>
 								{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
 							</InputGroup>

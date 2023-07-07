@@ -16,13 +16,13 @@ const WalletButton = ({ ...props }: any) => {
 	
 	// CONTEXT
 	const userContext = useContext(UserContext);
-	const { usuario, agregarUsuario, actualizarRed } = userContext;
-	let dirWallet = useTruncatedAddress(usuario)
+	const { user, agregarUsuario, actualizarRed } = userContext;
+	let dirWallet = useTruncatedAddress('')
 
 	// console.log("primera carga wallet", usuario)
 	useEffect(()=>{
-		if(usuario) setText(dirWallet)
-	},[usuario, dirWallet])
+		if(user) setText(dirWallet)
+	},[user, dirWallet])
 
 	// Funcion para conectar Metamask
 	const connectMetamask = async () => {

@@ -6,7 +6,6 @@ import {
 	Box,
 	Button,
 	CloseButton,
-	Container,
 	Flex,
 	Heading,
 	Input,
@@ -82,10 +81,10 @@ export default function MintIndex() {
 	const [tokens, setTokens] = useState([]);
 	const [minting, setMinting] = useState(false);
 	const toast = useToast();
-	// - - - -  ESTADOS FUERA DE LA CALCULADORA - - - - - - - - - - - 
+	// - - - -  ESTADOS FUERA DE LA CALCULADORA - - - - - - - - - - -
 	const [stepIndex, setStepIndex] = useState<number>(0);
 	const [methodBuy, setMethodBuy] = useState<boolean>(false);
-	const [textButton, setTextButton] = useState<string>('NEXT')
+	const [textButton, setTextButton] = useState<string>("NEXT");
 
 	// Proceso de minteo
 	const setMintingProcces = () => {
@@ -124,13 +123,13 @@ export default function MintIndex() {
 
 	// Siguiente step
 	const nextStep = async () => {
-		const upStep = stepIndex+1
-		setStepIndex(upStep)
+		const upStep = stepIndex + 1;
+		setStepIndex(upStep);
 
-		switch(upStep){
+		switch (upStep) {
 			case 2:
-				setTextButton('MINT');
-				break
+				setTextButton("MINT");
+				break;
 			case 3:
 				toast({
 					title: "Minteo exitoso!",
@@ -141,9 +140,12 @@ export default function MintIndex() {
 					position: "top-right"
 				});
 				setMintingProcces();
-				break
+				break;
+			default:
+				setTextButton("NEXT");
+				break;
 		}
-	}
+	};
 
 	// Computa los calculos
 	const computeTableValues = () => {
@@ -153,41 +155,41 @@ export default function MintIndex() {
 		let b: number = 0;
 
 		// Cantidad
-		if(ammount > 0 && ammount <= 1000){
-			a = 0.001
-		}else if(ammount > 1000 && ammount <= 10000){
-			a = 0.002
-		}else if(ammount > 10000 && ammount <= 50000){
-			a = 0.004
-		}else if(ammount > 50000 && ammount <= 100000){
-			a = 0.006
-		}else if(ammount > 100000 && ammount <= 500000){
-			a = 0.008
-		}else if(ammount > 500000 && ammount <= 1000000){
-			a = 0.01
-		}else {
-			a = 0
+		if (ammount > 0 && ammount <= 1000) {
+			a = 0.001;
+		} else if (ammount > 1000 && ammount <= 10000) {
+			a = 0.002;
+		} else if (ammount > 10000 && ammount <= 50000) {
+			a = 0.004;
+		} else if (ammount > 50000 && ammount <= 100000) {
+			a = 0.006;
+		} else if (ammount > 100000 && ammount <= 500000) {
+			a = 0.008;
+		} else if (ammount > 500000 && ammount <= 1000000) {
+			a = 0.01;
+		} else {
+			a = 0;
 		}
 
 		// Años
-		if( year <= 1){
-			b = 0.001
-		}else if( year > 1 && year <= 2){
-			b = 0.002
-		}else if( year > 2 && year <= 3 ){
-			b = 0.004
-		}else if(  year > 3 &&year <= 4){
-			b = 0.006
-		}else if(  year > 4 &&year <= 5){
-			b = 0.008
-		}else if(year > 5 && year <= 10){
-			b = 0.01
-		}else if(year > 10 && year <= 15){
-			b = 0.012
-		}else if(year > 15 && year <= 20){
-			b = 0.014
-		}else {
-			b = 0
+		if (year <= 1) {
+			b = 0.001;
+		} else if (year > 1 && year <= 2) {
+			b = 0.002;
+		} else if (year > 2 && year <= 3) {
+			b = 0.004;
+		} else if (year > 3 && year <= 4) {
+			b = 0.006;
+		} else if (year > 4 && year <= 5) {
+			b = 0.008;
+		} else if (year > 5 && year <= 10) {
+			b = 0.01;
+		} else if (year > 10 && year <= 15) {
+			b = 0.012;
+		} else if (year > 15 && year <= 20) {
+			b = 0.014;
+		} else {
+			b = 0;
 		}
 
 		let percent: number = a + b;
@@ -243,26 +245,21 @@ export default function MintIndex() {
 	};
 
 	// CAMBIOS EN EL SELECT DE METODO DE PAGO
-	const handleChangeSelectMethod = (event: any)=>{
+	const handleChangeSelectMethod = (event: any) => {
 		const val = event.target.value;
 
 		switch (val) {
 			case "CRIPTO":
-				setMethodBuy(true)
+				setMethodBuy(true);
 				break;
 			case "TSS":
-				setMethodBuy(false)
+				setMethodBuy(false);
 				break;
 			default:
-				setMethodBuy(false)
-				break
+				setMethodBuy(false);
+				break;
 		}
-	}
-
-	useEffect(() => {
-		computeTableValues();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [calc.year, calc.ammount]);
+	};
 
 	// Precios ETH, BTC, MATIC
 	async function getEthPrice() {
@@ -273,13 +270,6 @@ export default function MintIndex() {
 		return data;
 	}
 
-	useEffect(() => {
-		getEthPrice().then((res: any) => {
-			setPrice({ ...res });
-			setPriceAct(res.ethereum.usd);
-		});
-	}, []);
-
 	// Obtener tokens
 	const getAllTokens = async () => {
 		const provider = new ethers.providers.JsonRpcBatchProvider("https://eth-goerli.g.alchemy.com/v2/3LjxKHUHH-Vylm2-tRJTs2OR1hgyIp4k");
@@ -287,6 +277,18 @@ export default function MintIndex() {
 		const getTokens = await contract.getAllKirbankTokens();
 		setTokens(getTokens);
 	};
+
+	useEffect(() => {
+		getEthPrice().then((res: any) => {
+			setPrice({ ...res });
+			setPriceAct(res.ethereum.usd);
+		});
+	}, []);
+
+	useEffect(() => {
+		computeTableValues();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [calc.year, calc.ammount]);
 
 	useEffect(() => {
 		// getAllTokens();
@@ -302,7 +304,7 @@ export default function MintIndex() {
 	return (
 		<Nav>
 			{/* <main className={styles.main}> */}
-			<Box minWidth="full" maxWidth="container.xl" mt="12" mb='2'>
+			<Box minWidth="full" maxWidth="container.xl" mt="12" mb="2">
 				{/* HEADING */}
 				<Flex flexDirection="column" align="start" justify="start">
 					<Box>
@@ -313,7 +315,7 @@ export default function MintIndex() {
 				{/* BODY - CONTAINER */}
 				<Flex direction="column" align="center" justify="center" mt="12">
 					{/* DESKTOP-STEPS */}
-					<Stepper index={stepIndex} mb="10" size={{ base: "sm", md: "md", lg: "lg" }} display={{base: 'none', md: "flex"}} w="full" colorScheme="twitter">
+					<Stepper index={stepIndex} mb="10" size={{ base: "sm", md: "md", lg: "lg" }} display={{ base: "none", md: "flex" }} w="full" colorScheme="twitter">
 						{steps.map((step, index) => (
 							<Step key={index}>
 								<StepIndicator>
@@ -330,7 +332,7 @@ export default function MintIndex() {
 						))}
 					</Stepper>
 					{/* MOBILE-STEPS */}
-					<Stepper index={stepIndex} mb="10" size={{ base: "sm"}} display={{base: 'flex', md: "none"}} orientation='vertical'  w="full" colorScheme="green">
+					<Stepper index={stepIndex} mb="10" size={{ base: "sm" }} display={{ base: "flex", md: "none" }} orientation="vertical" w="full" colorScheme="green">
 						{steps.map((step, index) => (
 							<Step key={index}>
 								<StepIndicator>
@@ -348,21 +350,12 @@ export default function MintIndex() {
 					</Stepper>
 					{/* CONTENENDORES DE INFORMACION */}
 					{stepIndex === 0 ? (
-						<VStack
-							align="stretch"
-							w={{ base: "full" }}
-							mt={{ base: 3, lg: 0 }}
-							border="2px"
-							borderColor="gray.500"
-							rounded="lg"
-							px='8'
-							py='5'
-						>
-							<VStack >
-								<Flex flex={{ base: "1", md: "2" }} align="center" justify="center" w="full" pb='3'>
+						<VStack align="stretch" w={{ base: "full" }} mt={{ base: 3, lg: 0 }} border="2px" borderColor="gray.500" rounded="lg" px="8" py="5">
+							<VStack>
+								<Flex flex={{ base: "1", md: "2" }} align="center" justify="center" w="full" pb="3">
 									<Text>Elige tu metodo de pago:</Text>
 								</Flex>
-								<Select defaultValue='TSS' pr={{ base: "0", md: "2" }} color="gray.500" onChange={(e) => handleChangeSelectMethod(e)} flex={{ base: "1", md: "3" }}>
+								<Select defaultValue={methodBuy?"CRIPTO":"TSS"} pr={{ base: "0", md: "2" }} color="gray.500" onChange={(e) => handleChangeSelectMethod(e)} flex={{ base: "1", md: "3" }}>
 									<option value="TSS">Transferencia</option>
 									<option value="CRIPTO">Criptomoneda</option>
 									{/* <option value='matic'>Polygon</option> */}
@@ -397,7 +390,7 @@ export default function MintIndex() {
 									<Input value={calc.ammount} placeholder="Enter amount" type="number" onChange={(e) => handleChange(e, "ammount")} />
 									{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
 								</InputGroup>
-								{methodBuy?
+								{methodBuy ? (
 									<Stack
 										direction={{ base: "column", md: "row" }}
 										divider={<StackDivider display={{ base: "none", md: "flex" }} borderColor="gray.400" />}
@@ -417,7 +410,9 @@ export default function MintIndex() {
 											</Text>
 										</Flex>
 									</Stack>
-								:''}
+								) : (
+									""
+								)}
 							</VStack>
 
 							{/* ENTRADA DOBLE */}
@@ -446,13 +441,16 @@ export default function MintIndex() {
 									<Text color="blue.900" as="b">
 										KTB #{tokens.length + 1}
 									</Text>
-									{methodBuy?
-									<Tag color="white" bg={coin == "ETH" ? "blue.500" : "yellow.400"}>
-										<TagLabel>
-											{(calc.ammount / priceAct).toFixed(2)} {coin}
-										</TagLabel>
-										{coin == "ETH" ? <EthereumIcon fill="white" w="16px" h="16px" ml="1" /> : <BitcoinIcon fill="white" w="16px" h="16px" ml="1" />}
-									</Tag>:''}
+									{methodBuy ? (
+										<Tag color="white" bg={coin == "ETH" ? "blue.500" : "yellow.400"}>
+											<TagLabel>
+												{(calc.ammount / priceAct).toFixed(2)} {coin}
+											</TagLabel>
+											{coin == "ETH" ? <EthereumIcon fill="white" w="16px" h="16px" ml="1" /> : <BitcoinIcon fill="white" w="16px" h="16px" ml="1" />}
+										</Tag>
+									) : (
+										""
+									)}
 								</Flex>
 								<Flex minWidth="full" alignItems="center" gap="2" mt={3}>
 									<Text color="blue.900">
@@ -480,27 +478,23 @@ export default function MintIndex() {
 							borderColor="gray.500"
 							rounded="lg"
 						>
-							<VStack px="3" py='4'>
+							<VStack px="3" py="4">
 								<Flex flex={{ base: "1", md: "2" }} align="center" justify="center" w="full">
-									<Text>
-										Sube tu comprobante
-									</Text>
+									<Text>Sube tu comprobante</Text>
 								</Flex>
 								<InputGroup>
-									<Input type="file"  />
+									<Input type="file" />
 								</InputGroup>
 							</VStack>
 
 							{/* RESUMEN */}
-							<VStack px="3" py='4'>
-								<Flex minWidth="full" alignItems="center" gap="2" justify="space-between" >
+							<VStack px="3" py="4">
+								<Flex minWidth="full" alignItems="center" gap="2" justify="space-between">
 									<Text color="blue.900" as="b">
 										Documentos subidos
 									</Text>
-									<Tag >
-										<TagLabel>
-											0 Mb
-										</TagLabel>
+									<Tag>
+										<TagLabel>0 Mb</TagLabel>
 									</Tag>
 								</Flex>
 							</VStack>
@@ -508,6 +502,9 @@ export default function MintIndex() {
 					)}
 				</Flex>
 				<Flex mt={8}>
+					<Button bg="blue.400" variant="solid" color="white" mr="5" onClick={() => setStepIndex(stepIndex - 1 <= 0 ? 0 : stepIndex - 1)} colorScheme="twitter">
+						BACK
+					</Button>
 					<Button
 						isLoading={minting}
 						loadingText="Añadiendo a la blockchain..."

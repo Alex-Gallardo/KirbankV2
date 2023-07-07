@@ -75,7 +75,7 @@ export default function Onboarding() {
 	const finalRef = useRef(null)
 
 	const userContext = useContext(UserContext);
-	const { usuario, red, actualizarRed } = userContext;
+	const { user, red, actualizarRed } = userContext;
 
 	
 	
@@ -91,7 +91,7 @@ export default function Onboarding() {
 				let signer = provider.getSigner()
 				let contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken721.abi, signer)
 				console.log("-- contract --", contract)
-				contract.getKirbankTokensByOwner(usuario).then((tokens: any) =>{
+				contract.getKirbankTokensByOwner(user).then((tokens: any) =>{
 					console.log("-- tokens: ", tokens)
 					setTokens([...tokens])
 				})
@@ -148,7 +148,6 @@ export default function Onboarding() {
 					variant='elevated'
 					w='full'
 					maxW='4xl'
-					onClick={connectMetamask}
 					border='2px'
 					borderColor='blue.300'
 					>

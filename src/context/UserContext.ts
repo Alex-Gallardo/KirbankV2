@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 const UserContext = createContext({
-	usuario: "",
+	user: null,
 	nfts: [],
 	total: 0,
 	red: false,
