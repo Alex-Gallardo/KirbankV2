@@ -19,7 +19,6 @@ import {
 	Text,
 	VStack,
 	Tag,
-	TagLeftIcon,
 	TagLabel,
 	Stack
 } from "@chakra-ui/react";
@@ -69,13 +68,13 @@ export default function CalculatorIndex() {
 		// Años
 		if( year <= 1){
 			b = 0.001
-		}else if( year <= 2){
+		}else if( year > 1 && year <= 2){
 			b = 0.002
-		}else if( year <= 3){
+		}else if( year > 2 && year <= 3 ){
 			b = 0.004
-		}else if( year <= 4){
+		}else if(  year > 3 &&year <= 4){
 			b = 0.006
-		}else if( year <= 5){
+		}else if(  year > 4 &&year <= 5){
 			b = 0.008
 		}else if(year > 5 && year <= 10){
 			b = 0.01
@@ -91,7 +90,6 @@ export default function CalculatorIndex() {
 		const profit: number = (ammount * percent)
 		const final: number = profit+ ammount;
 		setCalc({...calc, percent, final, profit })
-		console.log("operacion", percent, final, profit)
 	}
 
 	// Cambios input

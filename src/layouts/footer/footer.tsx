@@ -1,21 +1,17 @@
 import * as React from "react";
 
-import { Box, Container, Divider, Flex, Heading, SimpleGrid, Spacer, Stack, Text, useToast } from "@chakra-ui/react";
+import { Box, Container,  Flex, Spacer,  Text, useToast } from "@chakra-ui/react";
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useCallback, useContext, useEffect } from "react";
 
-import Head from "next/head";
-import Link from "next/link";
 import UserContext from "@/context/UserContext";
-import { useRouter } from "next/router";
 
 export default function Footer() {
-	const router = useRouter();
 	const toast = useToast();
 
 	// CONTEXT
 	const userContext = useContext(UserContext);
-	const { usuario, red, actualizarRed } = userContext;
+	const { user, red, actualizarRed } = userContext;
 
 	// Evalua las circustancias de la red
 	const checkRedIsRunning = useCallback(() => {
@@ -29,7 +25,7 @@ export default function Footer() {
 				variant: "solid",
 				position: "bottom-right"
 			});
-			router.push("/login");
+			// router.push("/login");
 			return;
 		} else {
 			// RED ESTABLECIDA
@@ -76,7 +72,7 @@ export default function Footer() {
 				}
 			});
 		}
-	},[ actualizarRed, router, toast]);
+	},[ actualizarRed, toast]);
 
 	useEffect(() => {
 		checkRedIsRunning()
@@ -84,7 +80,7 @@ export default function Footer() {
 
 	return (
 		<Container minWidth="full" h="auto" p={4} borderTop={"2px"} borderColor="gray.200">
-			<Flex flexDirection="row" justify="space-between" align="center" width="full" px={5}>
+			<Flex flexDirection="row" justify="space-between" align="center" width="full" px={{ base: "0",  lg: "5" }}>
 				<Text color="gray.300" fontSize={{ base: "sm", lg: "md" }} noOfLines={1} >
 					© {new Date().getFullYear()} Kirbank all rights reserved
 				</Text>
@@ -94,9 +90,9 @@ export default function Footer() {
 						<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{red ? "Network connected" : "Network offline"}</Text>
 					</Box>
 					<Spacer />
-					<Box px="2" display="flex" alignItems="center" color={usuario ? "gray.800" : "red.500"}>
-						{usuario ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
-						<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{usuario ? "Wallet connected" : "Wallet offline"}</Text>
+					<Box px="2" display="flex" alignItems="center" color={user ? "gray.800" : "red.500"}>
+						{user ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
+						<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{user ? "Wallet connected" : "Wallet offline"}</Text>
 					</Box>
 				</Flex>
 			</Flex>

@@ -6,7 +6,7 @@ export default function UserReducer (state: any, action: any)  {
 		case SELECCIONAR_USUARIO:
 			return {
 				...state,
-				usuario: action.payload
+				user: action.payload
 			};
 
 		case SELECCIONAR_NFT:

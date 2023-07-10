@@ -17,21 +17,23 @@ import {
 	Spacer,
 	Stack
 } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
-import { useState } from "react";
 
+import CalculatorIcon from "@/icons/calculator";
+import DiscordIcon from "@/icons/discord";
+import DocsIcon from "@/icons/docs";
+import FlashIcon from "@/icons/flash";
 import Footer from "../footer/footer";
+import GithubIcon from "@/icons/github";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import Head from "next/head";
 import Header from "../header/header";
-import Link from "next/link";
-import WalletButton from "@/components/wallet-buttton/wallet-button";
-import { useRouter } from "next/router";
-import CalculatorIcon from "@/icons/calculator";
 import HomeIcon from "@/icons/home";
-import FlashIcon from "@/icons/flash";
-import DocsIcon from "@/icons/docs";
-import GithubIcon from "@/icons/github";
-import DiscordIcon from "@/icons/discord";
+import Link from "next/link";
+import  PersonalIcon  from '@/icons/personal';
+import WalletButton from "@/components/wallet-buttton/wallet-button";
+import WalletIcon from "@/icons/wallet";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function Nav({ children }: any) {
 	const [isDrawer, setDrawer] = useState(false);
@@ -72,6 +74,9 @@ export default function Nav({ children }: any) {
 							<Button colorScheme="gray.500" variant="link" leftIcon={<DocsIcon />} fontSize='xl'>
 								<Link style={{marginLeft: '0.5em'}} href="/docs">Docs</Link>
 							</Button>
+							<Button colorScheme="gray.500" variant="link" leftIcon={<PersonalIcon />} fontSize='xl'>
+								<Link style={{marginLeft: '0.5em'}} href="/profile">Profile</Link>
+							</Button>
 						</Stack>
 						{/* SOCIAL MEDIA */}
 						<Flex justify="space-between" align="start" w="full" px={{ sm: 0, md: 1, lg: 5 }} display={{ base: "none", lg: "flex" }}>
@@ -88,7 +93,7 @@ export default function Nav({ children }: any) {
 							</Box>
 						</Flex>
 						{/* MOBILE VERSION */}
-						<WalletButton display={{ base: "flex", lg: "none" }}></WalletButton>
+						{/* <WalletButton display={{ base: "flex", lg: "none" }}></WalletButton> */}
 						<IconButton variant="outline" display={{ base: "flex", lg: "none" }} aria-label="Menu" icon={<HamburgerIcon />} onClick={() => setDrawer(true)} />
 						{/* DRAWER */}
 						<Drawer isOpen={isDrawer} placement="right" onClose={() => setDrawer(false)}>
@@ -110,13 +115,16 @@ export default function Nav({ children }: any) {
 									<Button colorScheme="gray.500" variant="link" leftIcon={<DocsIcon />}>
 										<Link href="/docs">Docs</Link>
 									</Button>
+									<Button colorScheme="gray.500" variant="link" leftIcon={<PersonalIcon />}>
+										<Link href="/profile">Profile</Link>
+									</Button>
 								</DrawerBody>
 
 								<DrawerFooter>
-									<Button variant="outline" mr={3} onClick={() => setDrawer(false)}>
+									<Button variant="outline"  onClick={() => setDrawer(false)}>
 										Cancel
 									</Button>
-									<Button colorScheme="blue">Save</Button>
+									{/* <Button colorScheme="blue">Save</Button> */}
 								</DrawerFooter>
 							</DrawerContent>
 						</Drawer>

@@ -12,8 +12,8 @@ const UserState = ({ children }: any) => {
 	const router = useRouter();
 
 	// State inicila
-	const initialState: {usuario: string | undefined, nfts: any[], total: number, red:boolean} = {
-		usuario: undefined,
+	const initialState: {user: any, nfts: any[], total: number, red:boolean} = {
+		user: null,
 		nfts: [],
 		total: 0,
 		red: false
@@ -77,16 +77,16 @@ const UserState = ({ children }: any) => {
 
 	useEffect(() => {
 		console.log("Entro a UserState")
-		if(state.usuario == undefined){
-			router.pathname != "/login" ? router.replace("/login") : "";
-		}
+		// if(state.usuario == undefined){
+		// 	router.pathname != "/login" ? router.replace("/login") : "";
+		// }
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
 		<UserContext.Provider
 			value={{
-				usuario: state.usuario,
+				user: state.user,
 				nfts: state.nfts,
 				total: state.total,
 				red: state.red,
@@ -103,7 +103,3 @@ const UserState = ({ children }: any) => {
 };
 
 export default UserState;
-function toast(arg0: { title: string; status: string; duration: number; isClosable: boolean; variant: string; position: string; }) {
-	throw new Error("Function not implemented.");
-}
-
