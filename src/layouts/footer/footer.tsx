@@ -11,7 +11,7 @@ export default function Footer() {
 
 	// CONTEXT
 	const userContext = useContext(UserContext);
-	const { usuario, red, actualizarRed } = userContext;
+	const { user, red, actualizarRed } = userContext;
 
 	// Evalua las circustancias de la red
 	const checkRedIsRunning = useCallback(() => {
@@ -90,9 +90,9 @@ export default function Footer() {
 						<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{red ? "Network connected" : "Network offline"}</Text>
 					</Box>
 					<Spacer />
-					<Box px="2" display="flex" alignItems="center" color={usuario ? "gray.800" : "red.500"}>
-						{usuario ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
-						<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{usuario ? "Wallet connected" : "Wallet offline"}</Text>
+					<Box px="2" display="flex" alignItems="center" color={user ? "gray.800" : "red.500"}>
+						{user ? <CheckIcon mr={2} /> : <SmallCloseIcon mr={2} />}
+						<Text fontSize={{ base: "sm", lg: "md" }} noOfLines={1}>{user ? "Wallet connected" : "Wallet offline"}</Text>
 					</Box>
 				</Flex>
 			</Flex>

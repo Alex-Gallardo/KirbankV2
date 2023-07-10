@@ -274,7 +274,7 @@ export default function Home() {
 					</Stack>
 					<Box py={5} w="full">
 						<Tag size="lg" variant="subtle" bg="cyan.600" color="white" py="3" w="full">
-							<TagLabel as="b">My NFT's</TagLabel>
+							<TagLabel as="b">My NFTs</TagLabel>
 						</Tag>
 					</Box>
 
