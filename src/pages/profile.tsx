@@ -14,7 +14,7 @@ export default function Profile() {
 
 	// CONTEXT
 	const userContext = useContext(UserContext);
-	const { user, red, actualizarRed } = userContext;
+	const { user }: {user: any} = userContext;
 
 	// Cambios input
 	const handleChange = (event: any, op: string) => {
