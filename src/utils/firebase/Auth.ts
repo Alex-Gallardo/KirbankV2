@@ -3,24 +3,23 @@ import {
 	getAuth,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
-	onAuthStateChanged,
+	// onAuthStateChanged,
 	signInWithPopup,
 	User as UserFB,
-	FacebookAuthProvider,
+	// FacebookAuthProvider,
 	GoogleAuthProvider,
 	getAdditionalUserInfo,
-	UserCredential,
+	UserCredential
 } from "firebase/auth";
 
 import { firebaseApp } from "../../keys/firebase";
 import { saveInCollection } from "./DB";
 import { UserSchema } from "@/schemas/UserSchema";
 
-let FacebookProvider = new FacebookAuthProvider();
+// let FacebookProvider = new FacebookAuthProvider();
 let GoogleProvider = new GoogleAuthProvider();
 
 const getAuthUser = async () => {
-	console.log("firebaseApp:", firebaseApp);
 	return getAuth(firebaseApp);
 };
 
@@ -43,19 +42,19 @@ export const login = async (email: string, pass: string) => {
 	});
 };
 
-export const facebookLogin = async () => {
-	const auth = await getAuthUser();
-	return signInWithPopup(auth, FacebookProvider).then((res: UserCredential) => {
-		if (getAdditionalUserInfo(res)?.isNewUser) saveUser(res);
-	});
-};
+// export const facebookLogin = async () => {
+// 	const auth = await getAuthUser();
+// 	return signInWithPopup(auth, FacebookProvider).then((res: UserCredential) => {
+// 		if (getAdditionalUserInfo(res)?.isNewUser) saveUser(res);
+// 	});
+// };
 
 export const googleLogin = async () => {
 	const auth = await getAuthUser();
 	return signInWithPopup(auth, GoogleProvider)
 		.then((res: UserCredential) => {
 			if (getAdditionalUserInfo(res)?.isNewUser) saveUser(res);
-            return res
+			return res;
 		})
 		.catch((err) => {
 			// **CAMBIAR A TOAST
@@ -84,17 +83,22 @@ export const logout = async () => {
 
 export const saveUser = async (cred: UserCredential, name?: string, last_name?: string) => {
 	const {
-		user: { uid, email, photoURL, displayName }
+		user: { uid, email, photoURL, displayName, phoneNumber, metadata }
 	} = cred;
 
 	const tmpUser: UserSchema = {
-		_id:uid,
-        displayName: displayName || '',
-		name: name ? name : '',
-		photoURL: photoURL|| undefined,
+		_id: uid,
+		name: name || "",
+		lastName: last_name || "",
+		displayName: displayName || "",
+		authMode: "google",
+		photoURL: photoURL || "",
+		mail: email || "@undefined.error",
+		phone: phoneNumber || "",
 		tokens: [],
-        mail: email || "@undefined.error",
-    authMode: 'google'
+		// Opcionales
+		// @ts-ignore
+		created: metadata.createdAt
 	};
 	saveInCollection<any>(tmpUser, uid, "users");
 };

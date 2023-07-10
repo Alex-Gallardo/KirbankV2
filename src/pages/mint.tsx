@@ -35,7 +35,7 @@ import {
 	VStack,
 	useToast
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import BitcoinIcon from "../icons/bitcoin";
 import EthereumIcon from "@/icons/ethereum";
@@ -43,8 +43,11 @@ import Image from "next/image";
 import { Inter } from "@next/font/google";
 import KirbankToken from "@/utils/abi/KirbankToken.json";
 import Nav from "@/layouts/nav/nav";
+import { TokenSchema } from "@/schemas/TokenSchema";
+import UserContext from "@/context/UserContext";
 import { abiKirbankTokenAddress } from "config";
 import { ethers } from "ethers";
+import { saveInCollection } from "@/utils/firebase/DB";
 
 interface KirbankToken {
 	imageUrl: string;
@@ -53,22 +56,58 @@ interface KirbankToken {
 	dateCreate: string;
 }
 
+// IMAGENES
+const tokenImages: string[] = [
+	"https://i.ibb.co/mCgph2x/NFT-Kirbank-1.png",
+	"https://i.ibb.co/QCnCz1k/NFT-Kirbank-2.png",
+	"https://i.ibb.co/BNrmy8n/NFT-Kirbank-3.png",
+	"https://i.ibb.co/XbHkWYc/NFT-Kirbank-4.png",
+	"https://i.ibb.co/M90PDpL/NFT-Kirbank-5.png",
+	"https://i.ibb.co/WsHXzWn/NFT-Kirbank-6.png",
+	"https://i.ibb.co/GW00q5N/NFT-Kirbank-7.png",
+	"https://i.ibb.co/sH3ch3f/NFT-Kirbank-8.png",
+	"https://i.ibb.co/ySH8xNf/NFT-Kirbank-9.png",
+	"https://i.ibb.co/m5MZpPK/NFT-Kirbank-10.png",
+	"https://i.ibb.co/5kymnCQ/NFT-Kirbank-11.png",
+	"https://i.ibb.co/Y2BBY7S/NFT-Kirbank-12.png",
+	"https://i.ibb.co/99jQ79T/NFT-Kirbank-13.png",
+	"https://i.ibb.co/hWLMrzL/NFT-Kirbank-14.png",
+	"https://i.ibb.co/Ph6Pbv4/NFT-Kirbank-15.png",
+	"https://i.ibb.co/Z2hmmcD/NFT-Kirbank-16.png",
+	"https://i.ibb.co/yRSKcDM/NFT-Kirbank-17.png",
+	"https://i.ibb.co/KNcfyqH/NFT-Kirbank-18.png",
+	"https://i.ibb.co/TPqpmPB/NFT-Kirbank-19.png",
+	"https://i.ibb.co/YXgN2DB/NFT-Kirbank-20.png"
+];
+
+// PASOS
 const steps = [
-	{ title: "Método de pago", description: "Elige como pagaras" },
-	{ title: "Calcula tu inversión", description: "Calculadora" },
-	{ title: "Verifica información", description: "Revisa que todo este en orden" }
+	{ title: "Payment method", description: "Choose how you will pay" },
+	{ title: "Calculator", description: "Calculate your investment" },
+	{ title: "Verify information", description: "Check that everything is in order" }
 ];
 
 export default function MintIndex() {
 	// ESTADOS
-	const [newToken, setNewToken] = useState<KirbankToken>({
+	// Nuevo token
+	const [newToken, setNewToken] = useState<TokenSchema>({
+		_id: new Date().getTime(),
+		owner: "-",
+		ownerMail: "",
+		ownerWallet: "",
 		imageUrl: "https://media4.giphy.com/media/pn1e1I4nAVtSMo1h7y/giphy.gif?cid=ecf05e47ryp98dwo8ttimovuonlp970vmz9xwzpjbnywvolf&rid=giphy.gif&ct=g",
-		cost: "",
-		yearsSet: "",
-		dateCreate: Date.now() + ""
+		amount: 0,
+		percent: 0,
+		yearsSet: 0,
+		paymentMethod: "",
+		dateCreate: Date.now(),
+		applicationStatus: "",
+		dataUri: "",
+		collection: "dogs"
 	});
-	const [calc, setCalc] = useState<{ ammount: number; year: number; percent: number; profit: number; final: number }>({
-		ammount: 0,
+	//  - - - -  ESTADOS DE CALCULADORA - - - - - - - - - - -
+	const [calc, setCalc] = useState<{ amount: number; year: number; percent: number; profit: number; final: number }>({
+		amount: 0,
 		year: 1,
 		percent: 0,
 		profit: 0,
@@ -78,94 +117,40 @@ export default function MintIndex() {
 	const [priceAct, setPriceAct] = useState(0);
 	const [coin, setCoin] = useState("ETH");
 	const [visible, setVisible] = useState(false);
-	const [tokens, setTokens] = useState([]);
-	const [minting, setMinting] = useState(false);
-	const toast = useToast();
-	// - - - -  ESTADOS FUERA DE LA CALCULADORA - - - - - - - - - - -
+	// - - - -  ESTADOS DE LOS PASOS - - - - - - - - - - -
 	const [stepIndex, setStepIndex] = useState<number>(0);
 	const [methodBuy, setMethodBuy] = useState<boolean>(false);
+	const [minting, setMinting] = useState(false);
 	const [textButton, setTextButton] = useState<string>("NEXT");
+	//  - - - -  ESTADOS GENERALES - - - - - - - - - - -
+	const [tokens, setTokens] = useState([]);
 
-	// Proceso de minteo
-	const setMintingProcces = () => {
-		setMinting(false);
-		setVisible(true);
-		setTimeout(() => {
-			setVisible(false);
-		}, 6000);
-	};
+	// CONTEXT
+	const userContext = useContext(UserContext);
+	const { user, red, actualizarRed } = userContext;
 
-	// Mintear un token
-	const addToken = async () => {
-		const { ethereum }: any = window;
-
-		if (ethereum) {
-			const provider = new ethers.providers.Web3Provider(ethereum);
-			const signer = provider.getSigner();
-
-			const contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, signer);
-			const transaction = await contract.addKirbankToken(newToken.imageUrl, newToken.cost, newToken.yearsSet, newToken.dateCreate);
-			setMinting(true);
-			console.log("Transaction initalized");
-			await transaction.wait();
-			toast({
-				title: "Minteo exitoso!",
-				description: "Acabas de crear un NFT con nosotros",
-				status: "success",
-				duration: 3000,
-				isClosable: true,
-				position: "top-right"
-			});
-			console.log("Transaction fiinitalized");
-			setMintingProcces();
-		}
-	};
-
-	// Siguiente step
-	const nextStep = async () => {
-		const upStep = stepIndex + 1;
-		setStepIndex(upStep);
-
-		switch (upStep) {
-			case 2:
-				setTextButton("MINT");
-				break;
-			case 3:
-				toast({
-					title: "Minteo exitoso!",
-					description: "Acabas de crear un NFT con nosotros",
-					status: "success",
-					duration: 3000,
-					isClosable: true,
-					position: "top-right"
-				});
-				setMintingProcces();
-				break;
-			default:
-				setTextButton("NEXT");
-				break;
-		}
-	};
+	// TOAST
+	const toast = useToast();
 
 	// Computa los calculos
 	const computeTableValues = () => {
-		const { ammount, year } = calc;
+		const { amount, year } = calc;
 
 		let a: number = 0;
 		let b: number = 0;
 
 		// Cantidad
-		if (ammount > 0 && ammount <= 1000) {
+		if (amount > 0 && amount <= 1000) {
 			a = 0.001;
-		} else if (ammount > 1000 && ammount <= 10000) {
+		} else if (amount > 1000 && amount <= 10000) {
 			a = 0.002;
-		} else if (ammount > 10000 && ammount <= 50000) {
+		} else if (amount > 10000 && amount <= 50000) {
 			a = 0.004;
-		} else if (ammount > 50000 && ammount <= 100000) {
+		} else if (amount > 50000 && amount <= 100000) {
 			a = 0.006;
-		} else if (ammount > 100000 && ammount <= 500000) {
+		} else if (amount > 100000 && amount <= 500000) {
 			a = 0.008;
-		} else if (ammount > 500000 && ammount <= 1000000) {
+		} else if (amount > 500000 && amount <= 1000000) {
 			a = 0.01;
 		} else {
 			a = 0;
@@ -193,36 +178,20 @@ export default function MintIndex() {
 		}
 
 		let percent: number = a + b;
-		let profit: number = ammount * percent;
-		let final: number = ammount * percent + ammount;
+		let profit: number = amount * percent;
+		let final: number = amount * percent + amount;
 		setCalc({ ...calc, percent, final, profit });
 	};
 
-	// Cambios input
-	const handleChange = (event: any, op: string) => {
-		let valor: any = 0;
-		if (op != "year") valor = event.target.value;
-		if (valor == "") valor = 0;
+	// Precios ETH, BTC, MATIC
+	async function getEthPrice() {
+		const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin&vs_currencies=usd");
+		const data = await response.json();
+		// const ethPrice = data.ethereum.usd;
+		return data;
+	}
 
-		switch (op) {
-			case "ammount":
-				setCalc({ ...calc, ammount: parseInt(valor, 10) });
-				setNewToken({ ...newToken, cost: valor + "" });
-				break;
-			case "year":
-				setCalc({ ...calc, year: parseInt(event) });
-				setNewToken({ ...newToken, yearsSet: event });
-				break;
-			case "link":
-				setNewToken({ ...newToken, imageUrl: valor + "" });
-				break;
-			default:
-				setCalc({ ...calc });
-				break;
-		}
-	};
-
-	// Cambios select
+	// Cambios select criptomoneda
 	const handleChangeSelect = (event: any) => {
 		const val = event.target.value;
 
@@ -244,6 +213,155 @@ export default function MintIndex() {
 		}
 	};
 
+	// Obtener tokens
+	const getAllTokens = async () => {
+		const provider = new ethers.providers.JsonRpcBatchProvider("https://eth-goerli.g.alchemy.com/v2/3LjxKHUHH-Vylm2-tRJTs2OR1hgyIp4k");
+		const contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, provider);
+		const getTokens = await contract.getAllKirbankTokens();
+		setTokens(getTokens);
+	};
+
+	// Proceso de minteo
+	const setMintingProcces = () => {
+		setMinting(false);
+		setVisible(true);
+		setTimeout(() => {
+			setVisible(false);
+		}, 8000);
+	};
+
+	// Elige una imagen para el NFT
+	const selectImageUrl = () => {
+		const indiceAleatorio = Math.floor(Math.random() * tokenImages.length);
+		return tokenImages[indiceAleatorio];
+	};
+
+	// Crear un nuevo NFT Firebase
+	const createNewNft = async () => {
+		const newNFT: TokenSchema = { ...newToken };
+
+		// Agregamos los datos necesario
+		// - - - - - Calculadora - - - - - -
+		newNFT.amount = calc.amount;
+		newNFT.yearsSet = calc.year;
+		newNFT.percent = calc.percent;
+		// - - - - - Owner blockchain - - - - - -
+		// @ts-ignore
+		newNFT.owner = user?.uid || "no encontrado";
+		// @ts-ignore
+		newNFT.ownerMail = user?.email || "no encontrado";
+		// - - - - - Metodo de pago - - - - - -
+		newNFT.paymentMethod = methodBuy ? "cryptocurrency" : "transfer";
+		newNFT.applicationStatus = "pending";
+		// - - - - - Imagen - - - - - -
+		newNFT.imageUrl = selectImageUrl();
+
+		debugger;
+		const res = await saveInCollection(newNFT, newNFT._id + "", "tokens");
+	};
+
+	// Siguiente step y ordena el minteo
+	const nextStep = async (indicator: boolean) => {
+		let upStep: number = stepIndex;
+
+		// Validamos el indicador
+		if (indicator) {
+			upStep = stepIndex + 1;
+		} else {
+			upStep = stepIndex - 1;
+		}
+
+		// Validamos los limites de los pasos
+		if (upStep <= 0) upStep = 0;
+		else if (upStep >= 3) upStep = 3;
+
+		setStepIndex(upStep);
+
+		switch (upStep) {
+			case 2:
+				setTextButton("MINT");
+				break;
+			case 3:
+				toast({
+					title: "Successful request!",
+					description: "You have just created an NFT with us, you will receive a confirmation notification shortly",
+					status: "success",
+					duration: 3000,
+					isClosable: true,
+					position: "top-right"
+				});
+				setMintingProcces();
+				createNewNft();
+				break;
+			default:
+				setTextButton("NEXT");
+				break;
+		}
+	};
+
+	// Mintear un token a la blockchain
+	const addToken = async () => {
+		const { ethereum }: any = window;
+
+		// Creacion en Firebase
+		toast({
+			title: "Successful request!",
+			description: "You have just created an NFT with us, you will receive a confirmation notification shortly",
+			status: "success",
+			duration: 3000,
+			isClosable: true,
+			position: "top-right"
+		});
+		setMintingProcces();
+		createNewNft()
+
+		// Creacion en la blockchain
+		if (ethereum) {
+			const provider = new ethers.providers.Web3Provider(ethereum);
+			const signer = provider.getSigner();
+
+			const contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, signer);
+			const transaction = await contract.addKirbankToken(newToken.imageUrl, newToken.amount, newToken.yearsSet, newToken.dateCreate);
+			setMinting(true);
+			console.log("Transaction initalized");
+			await transaction.wait();
+			toast({
+				title: "Minteo exitoso!",
+				description: "Acabas de crear un NFT con nosotros",
+				status: "success",
+				duration: 3000,
+				isClosable: true,
+				position: "top-right"
+			});
+			console.log("Transaction fiinitalized");
+			setMintingProcces();
+		}
+	};
+
+	// Cambios input
+	const handleChange = (event: any, op: string) => {
+		let valor: any = 0;
+		if (op != "year") valor = event.target.value;
+		if (valor == "") valor = 0;
+
+		switch (op) {
+			case "amount":
+				setCalc({ ...calc, amount: parseInt(valor, 10) });
+				setNewToken({ ...newToken, amount: valor });
+				break;
+			case "year":
+				setCalc({ ...calc, year: parseInt(event) });
+				setNewToken({ ...newToken, yearsSet: event });
+				break;
+			case "link":
+				setNewToken({ ...newToken, imageUrl: valor + "" });
+				break;
+			default:
+				setCalc({ ...calc });
+				break;
+		}
+	};
+
 	// CAMBIOS EN EL SELECT DE METODO DE PAGO
 	const handleChangeSelectMethod = (event: any) => {
 		const val = event.target.value;
@@ -261,23 +379,7 @@ export default function MintIndex() {
 		}
 	};
 
-	// Precios ETH, BTC, MATIC
-	async function getEthPrice() {
-		const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin&vs_currencies=usd");
-		const data = await response.json();
-		// const ethPrice = data.ethereum.usd;
-		console.log("data-obtenida:", data);
-		return data;
-	}
-
-	// Obtener tokens
-	const getAllTokens = async () => {
-		const provider = new ethers.providers.JsonRpcBatchProvider("https://eth-goerli.g.alchemy.com/v2/3LjxKHUHH-Vylm2-tRJTs2OR1hgyIp4k");
-		const contract = new ethers.Contract(abiKirbankTokenAddress, KirbankToken.abi, provider);
-		const getTokens = await contract.getAllKirbankTokens();
-		setTokens(getTokens);
-	};
-
+	// Obtiene los precios de criptomonedas
 	useEffect(() => {
 		getEthPrice().then((res: any) => {
 			setPrice({ ...res });
@@ -285,18 +387,20 @@ export default function MintIndex() {
 		});
 	}, []);
 
+	// Computa los datos de la calculadora
 	useEffect(() => {
 		computeTableValues();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [calc.year, calc.ammount]);
+	}, [calc.year, calc.amount]);
 
+	// Obtener datos de localStorage
 	useEffect(() => {
 		// getAllTokens();
 
-		let a = localStorage.getItem("ammount");
+		let a = localStorage.getItem("amount");
 		let y = localStorage.getItem("year");
 		let c = localStorage.getItem("coin");
-		if (a && y) setCalc({ ...calc, ammount: parseInt(a, 10), year: parseInt(y, 10) });
+		if (a && y) setCalc({ ...calc, amount: parseInt(a, 10), year: parseInt(y, 10) });
 		if (c) setCoin(c);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -353,11 +457,17 @@ export default function MintIndex() {
 						<VStack align="stretch" w={{ base: "full" }} mt={{ base: 3, lg: 0 }} border="2px" borderColor="gray.500" rounded="lg" px="8" py="5">
 							<VStack>
 								<Flex flex={{ base: "1", md: "2" }} align="center" justify="center" w="full" pb="3">
-									<Text>Elige tu metodo de pago:</Text>
+									<Text>Choose your payment method:</Text>
 								</Flex>
-								<Select defaultValue={methodBuy?"CRIPTO":"TSS"} pr={{ base: "0", md: "2" }} color="gray.500" onChange={(e) => handleChangeSelectMethod(e)} flex={{ base: "1", md: "3" }}>
-									<option value="TSS">Transferencia</option>
-									<option value="CRIPTO">Criptomoneda</option>
+								<Select
+									defaultValue={methodBuy ? "CRIPTO" : "TSS"}
+									pr={{ base: "0", md: "2" }}
+									color="gray.500"
+									onChange={(e) => handleChangeSelectMethod(e)}
+									flex={{ base: "1", md: "3" }}
+								>
+									<option value="TSS">Wire transfer</option>
+									<option value="CRIPTO">Cryptocurrency</option>
 									{/* <option value='matic'>Polygon</option> */}
 								</Select>
 							</VStack>
@@ -387,7 +497,7 @@ export default function MintIndex() {
 									<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em">
 										$
 									</InputLeftElement>
-									<Input value={calc.ammount} placeholder="Enter amount" type="number" onChange={(e) => handleChange(e, "ammount")} />
+									<Input value={calc.amount} placeholder="Enter amount" type="number" onChange={(e) => handleChange(e, "amount")} />
 									{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
 								</InputGroup>
 								{methodBuy ? (
@@ -444,7 +554,7 @@ export default function MintIndex() {
 									{methodBuy ? (
 										<Tag color="white" bg={coin == "ETH" ? "blue.500" : "yellow.400"}>
 											<TagLabel>
-												{(calc.ammount / priceAct).toFixed(2)} {coin}
+												{(calc.amount / priceAct).toFixed(2)} {coin}
 											</TagLabel>
 											{coin == "ETH" ? <EthereumIcon fill="white" w="16px" h="16px" ml="1" /> : <BitcoinIcon fill="white" w="16px" h="16px" ml="1" />}
 										</Tag>
@@ -462,7 +572,7 @@ export default function MintIndex() {
 									</Text>
 									<Spacer />
 									<Text color="blue.900">
-										<Text as="b">final: </Text> $ {(calc.profit * calc.year + calc.ammount).toFixed(2)}
+										<Text as="b">final: </Text> $ {(calc.profit * calc.year + calc.amount).toFixed(2)}
 									</Text>
 								</Flex>
 							</VStack>
@@ -478,42 +588,54 @@ export default function MintIndex() {
 							borderColor="gray.500"
 							rounded="lg"
 						>
+							{/* Opciones en metodo de pago */}
 							<VStack px="3" py="4">
 								<Flex flex={{ base: "1", md: "2" }} align="center" justify="center" w="full">
-									<Text>Sube tu comprobante</Text>
+									<Text>{methodBuy ? "Make the transaction directly on your wallet" : "Upload your voucher"}</Text>
 								</Flex>
-								<InputGroup>
+								<InputGroup style={{ display: methodBuy ? "none" : "flex" }}>
 									<Input type="file" />
 								</InputGroup>
 							</VStack>
 
 							{/* RESUMEN */}
 							<VStack px="3" py="4">
-								<Flex minWidth="full" alignItems="center" gap="2" justify="space-between">
-									<Text color="blue.900" as="b">
-										Documentos subidos
-									</Text>
-									<Tag>
-										<TagLabel>0 Mb</TagLabel>
-									</Tag>
-								</Flex>
+								{methodBuy ? (
+									<Flex minWidth="full" alignItems="center" gap="2" justify="space-between">
+										<Text color="blue.900" as="b">
+											Add Kirbank NFT
+										</Text>
+										<Button bg="green.400" variant="solid" color="white" onClick={() => addToken()} colorScheme="whatsapp">
+											Mint
+										</Button>
+									</Flex>
+								) : (
+									<Flex minWidth="full" alignItems="center" gap="2" justify="space-between">
+										<Text color="blue.900" as="b">
+											Uploaded documents
+										</Text>
+										<Tag>
+											<TagLabel>0 Mb</TagLabel>
+										</Tag>
+									</Flex>
+								)}
 							</VStack>
 						</VStack>
 					)}
 				</Flex>
 				<Flex mt={8}>
-					<Button bg="blue.400" variant="solid" color="white" mr="5" onClick={() => setStepIndex(stepIndex - 1 <= 0 ? 0 : stepIndex - 1)} colorScheme="twitter">
+					<Button bg="blue.400" variant="solid" color="white" mr="5" onClick={() => nextStep(false)} colorScheme="twitter">
 						BACK
 					</Button>
 					<Button
 						isLoading={minting}
-						loadingText="Añadiendo a la blockchain..."
+						loadingText="Adding to the blockchain..."
 						bg="blue.400"
 						variant="solid"
 						color="white"
 						spinnerPlacement="end"
 						w="full"
-						onClick={() => nextStep()}
+						onClick={() => nextStep(true)}
 						colorScheme="twitter"
 					>
 						{textButton}

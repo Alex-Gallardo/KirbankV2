@@ -3,9 +3,11 @@ import { TokenSchema } from "./TokenSchema";
 export interface UserSchema {
     _id: string;
     name: string;
+    lastName: string
     displayName: string;
-    mail: string;
     authMode: string;
+    mail: string;
+    phone: string
     tokens: TokenSchema[];
     wallet?: string;
     created?: number;

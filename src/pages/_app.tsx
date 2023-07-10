@@ -8,14 +8,19 @@ import type { AppProps } from "next/app";
 // CONTEXT
 import UserState from "@/context/UserState";
 import { useRouter } from "next/router";
+import UserContext from "@/context/UserContext";
 
 // WEB3
 
 export default function App({ Component, pageProps }: AppProps) {
+	// RUTAS
 	const router = useRouter();
+	// TOAST
 	const toast = useToast();
 
-	console.log('- primera carga app -')
+	// CONTEXT
+	const userContext = useContext(UserContext);
+	const { user, agregarUsuario, actualizarRed } = userContext;
 
 	// Valida que el browser tenga instalado Metamask
 	const checkIfMetamaskIsConnected = async () => {
@@ -24,13 +29,12 @@ export default function App({ Component, pageProps }: AppProps) {
 		if (!ethereum) {
 			toast({
 				title: "Metamask no encontrado",
-				status: "error",
+				status: "warning",
 				duration: 1250,
 				variant: "solid",
 				position: "top-right"
 			});
 			// router.push("/login");
-			return;
 		} else {
 			toast({
 				title: "Metamask habilitado!",
@@ -65,7 +69,7 @@ export default function App({ Component, pageProps }: AppProps) {
 					}, 1000);
 				}
 			}
-			
+
 			// Metodo de Metamask cuando cambiamos de RED (Cadena)
 			// ethereum.on()
 			ethereum.on("chainChanged", (networkID: any) => {
@@ -93,10 +97,17 @@ export default function App({ Component, pageProps }: AppProps) {
 		}
 	};
 
-	useEffect(()=>{
-		checkIfMetamaskIsConnected()
+	// Valida que existe un usuario
+	const checkUser = () => {
+		const { user } = userContext;
+		if (user == null || user == undefined) router.push("/login");
+	};
+
+	useEffect(() => {
+		checkIfMetamaskIsConnected();
+		checkUser();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	},[])
+	}, []);
 
 	return (
 		<ChakraProvider>

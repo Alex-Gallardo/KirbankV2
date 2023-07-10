@@ -43,6 +43,7 @@ import {
 	useDisclosure
 } from "@chakra-ui/react";
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import { getAllFromCollection, getDataFromCollection } from "@/utils/firebase/DB";
 import { useContext, useEffect, useRef, useState } from "react";
 
 // import Image from "next/image";
@@ -50,6 +51,7 @@ import { Inter } from "@next/font/google";
 // import KirbankToken from '@/utils/abi/KirbankToken.json'
 import KirbankToken721 from "@/utils/abi/KirbankToken721.json";
 import Nav from "@/layouts/nav/nav";
+import { TokenSchema } from "@/schemas/TokenSchema";
 import UserContext from "@/context/UserContext";
 // import { abiKirbankTokenAddress } from "config";
 import { abiKirbankTokenAddress } from "config721";
@@ -59,7 +61,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
 	// ESTADOS
-	const [tokens, setTokens] = useState<any>([]);
+	const [tokens, setTokens] = useState<TokenSchema[]>([]);
 	const [data, setData] = useState<{ day: number; percent: number; total: number; finalTotal: number }>({
 		day: 0,
 		percent: 0,
@@ -76,7 +78,7 @@ export default function Home() {
 	const { user, red, actualizarRed } = userContext;
 
 	// Ordenar los datos
-	const orderData = (arrTokens: any) => {
+	const orderData = (arrTokens: TokenSchema[]) => {
 		let total: number[] = [0, 0, 0, 0];
 		let arrDates: number[][] = [];
 
@@ -85,19 +87,19 @@ export default function Home() {
 		let today = new Date(t);
 
 		// Recorremos los tokens
-		arrTokens.map((token: any, i: number) => {
-			let { percent, profit, final } = computeTableValues(parseInt(token[2], 10), parseInt(token[3], 10));
+		arrTokens.map((token: TokenSchema, i: number) => {
+			let { percent, profit, final } = computeTableValues(token.amount, token.yearsSet);
 
 			total[1] += percent;
 			total[2] += final;
-			total[3] += profit * parseInt(token[3], 10) + parseInt(token[2], 10);
+			total[3] += profit * token.yearsSet + token.amount;
 
 			// Asignamos las fechas de creacion de cada token
-			let dateToken = new Date(parseInt(token[4], 10));
+			let dateToken = new Date(token.dateCreate);
 			let diff = today.getTime() - dateToken.getTime();
 
-			arrDates.push([Math.trunc(diff / (1000 * 60 * 60 * 24)), parseInt(token[3]), profit / 365, (profit / 365) * Math.trunc(diff / (1000 * 60 * 60 * 24))]);
-			// arrDates.push([dateToken.getDate(), dateToken.getMonth() + 1, dateToken.getFullYear(), dateToken.getHours() , parseInt(token[3])])
+			arrDates.push([Math.trunc(diff / (1000 * 60 * 60 * 24)), token.yearsSet, profit / 365, (profit / 365) * Math.trunc(diff / (1000 * 60 * 60 * 24))]);
+			// arrDates.push([dateToken.getDate(), dateToken.getMonth() + 1, dateToken.getFullYear(), dateToken.getHours(), token.yearsSet])
 			console.log(
 				"data Dates",
 				dateToken.getUTCDate(),
@@ -122,29 +124,29 @@ export default function Home() {
 	};
 
 	// Computa los calculos
-	const computeTableValues = (ammount: number, year: number) => {
+	const computeTableValues = (amount: number, year: number) => {
 		let a: number = 0;
 		let b: number = 0;
 
 		// Cantidad
-		if (ammount > 0 && ammount <= 1000) {
+		if (amount > 0 && amount <= 1000) {
 			a = 0.001;
-		} else if (ammount > 1000 && ammount <= 10000) {
+		} else if (amount > 1000 && amount <= 10000) {
 			a = 0.002;
-		} else if (ammount > 10000 && ammount <= 50000) {
+		} else if (amount > 10000 && amount <= 50000) {
 			a = 0.004;
-		} else if (ammount > 50000 && ammount <= 100000) {
+		} else if (amount > 50000 && amount <= 100000) {
 			a = 0.006;
-		} else if (ammount > 100000 && ammount <= 500000) {
+		} else if (amount > 100000 && amount <= 500000) {
 			a = 0.008;
-		} else if (ammount > 500000 && ammount <= 1000000) {
+		} else if (amount > 500000 && amount <= 1000000) {
 			a = 0.01;
 		} else {
 			a = 0;
 		}
 
 		// Años
-		if (year > 0 && year <= 1) {
+		if (year <= 1) {
 			b = 0.001;
 		} else if (year > 1 && year <= 2) {
 			b = 0.002;
@@ -165,8 +167,8 @@ export default function Home() {
 		}
 
 		let percent: number = a + b;
-		let profit: number = ammount * percent;
-		let final: number = ammount * percent + ammount;
+		let profit: number = amount * percent;
+		let final: number = amount * percent + amount;
 		return { percent, profit, final };
 	};
 
@@ -196,6 +198,24 @@ export default function Home() {
 	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	// },[])
 
+	const getTokens = async () =>{
+		let respuesta = await getAllFromCollection('tokens')
+		if(!!user){
+			// @ts-ignore
+			let res = await getDataFromCollection('tokens', 'owner', "==", user.uid || 'xd')
+			console.log('Obtengo los tokens:', res)
+			// ?validar si no viene nada unkonow[]
+			setTokens(res as any)
+			orderData(res as any)
+		}
+
+	}
+
+	useEffect(()=>{
+		getTokens()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	},[])
+
 	// Activa el modal
 	const activeModal = (token: any) => {
 		console.log("token recibido:", token, typeof token);
@@ -209,7 +229,7 @@ export default function Home() {
 				{/* Texto y data */}
 				<Flex flexDirection={{ base: "column", sm: "column", md: "column", lg: "row" }} align="center" justify="space-between" w="full">
 					<Box>
-						<Heading>Kirbank Token ({tokens.length}/50)</Heading>
+						<Heading>Kirbank Token ({tokens.length}/20)</Heading>
 						<Text>24 day, 7 hrs, 9 min to next rebase</Text>
 					</Box>
 					<Flex flexDirection="row" align="center" justify="space-between" rounded="md" bg="cyan.300" px={6} py={2} minW={{ base: "100%", lg: "50%" }} mt={{ base: 8, lg: 0 }}>
@@ -270,17 +290,17 @@ export default function Home() {
 											<Stack mt="6" spacing="2">
 												<Heading size="md">Kirbank Token #KBT</Heading>
 												<Text noOfLines={1}>
-													investment: <Badge colorScheme="green">$ {token.cost}</Badge>
+													investment: <Badge colorScheme="green">$ {token.amount}</Badge>
 												</Text>
 												<Text noOfLines={1}>
 													time: <Badge colorScheme="blue">{token.yearsSet} years</Badge>
 												</Text>
 												<Text noOfLines={1}>
-													created: <Badge colorScheme="orange">{`${dateToken.getDate()} / ${dateToken.getMonth() + 1} / ${dateToken.getFullYear()}`}</Badge>
+													created: <Badge colorScheme="orange">{`${dateToken.getDate()}.${dateToken.getMonth() + 1}.${dateToken.getFullYear()}`}</Badge>
 												</Text>
 												<Text noOfLines={1}>
 													percentage:{" "}
-													<Badge colorScheme="purple">{computeTableValues(parseInt(token.cost, 10), parseInt(token.yearsSet, 10)).percent.toFixed(3)} %</Badge>
+													<Badge colorScheme="purple">{computeTableValues(parseInt(token.amount, 10), parseInt(token.yearsSet, 10)).percent.toFixed(3)} %</Badge>
 												</Text>
 											</Stack>
 										</CardBody>

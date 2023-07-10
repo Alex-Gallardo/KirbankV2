@@ -52,9 +52,8 @@ export default function Profile() {
 	}
 
 	useEffect(()=>{``
-		console.log('User encontrado context:', user)
-		if(user != null) setImage(user!.photoURL)
-
+		console.log('User encontrado context-Profile.tsx:', user)
+		if(user != null) setImage(user.photoURL)
 	})
 
 	return (

@@ -4,7 +4,6 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import UserContext from "@/context/UserContext";
 import WalletIcon from "@/icons/wallet";
 import { ethers } from "ethers";
-import useCheckMetamask from "@/hooks/useCheckMetamask";
 import { useRouter } from "next/router";
 import useTruncatedAddress from '@/hooks/useTruncatedAddress';
 
