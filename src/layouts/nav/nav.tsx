@@ -14,6 +14,7 @@ import {
 	Flex,
 	Heading,
 	IconButton,
+	Image,
 	Spacer,
 	Stack
 } from "@chakra-ui/react";
@@ -58,7 +59,13 @@ export default function Nav({ children }: any) {
 					{/* Sidebar */}
 					<Flex flexDirection={{ base: "row", lg: "column" }} justify="space-between" align="center" w={{ base: "100%", lg: "20%" }} maxW={{lg:'330px'}} p={5} className='background-navbar' >
 						{/* ENCABEZADOS */}
-						<Heading display={{ base: "none", lg: "flex" }} onClick={()=>router.push('/all')} color='gray.700'>Kirbank</Heading>
+						{/* <Heading display={{ base: "none", lg: "flex" }} onClick={()=>router.push('/all')} color='gray.700'>Kirbank</Heading> */}
+						<Image boxSize='500px'
+						className='image'
+    objectFit='cover'
+	display={{ base: "none", lg: "flex" }}
+    src='./images/Logotipo Kirbank negro.svg'
+    alt='Kirabank'/>
 						<Heading display={{ base: "flex", lg: "none" }}>K</Heading>
 						{/* RUTAS */}
 						<Stack spacing={8} display={{ base: "none", lg: "flex" }} alignItems="start">

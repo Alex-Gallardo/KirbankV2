@@ -1,14 +1,15 @@
 // STYLES
 import "@/styles/globals.css";
+import "@/styles/nav_style.css";
 
 import { ChakraProvider, useToast } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect } from "react";
 
 import type { AppProps } from "next/app";
+import UserContext from "@/context/UserContext";
 // CONTEXT
 import UserState from "@/context/UserState";
 import { useRouter } from "next/router";
-import UserContext from "@/context/UserContext";
 
 // WEB3
 

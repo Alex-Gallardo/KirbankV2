@@ -30,8 +30,9 @@ import Link from "next/link";
 import PersonalIcon from "@/icons/personal";
 import UserContext from "@/context/UserContext";
 import { ethers } from "ethers";
-import { useRouter } from "next/router";
 import { googleLogin } from "@/utils/firebase/Auth";
+import { useRouter } from "next/router";
+
 const LoginIndex = () => {
 	// STATE
 	const [stateModal, setStateModal] = useState<boolean>(false);
@@ -114,27 +115,37 @@ const LoginIndex = () => {
 
 	return (
 		<Stack direction={{ base: "column", lg: "row" }} justify="stretch" w="100vw" h="100vh">
-			<Box w={{ base: "100vw", md: "100%", lg: "30%" }} h={{ base: "30%", lg: "100%" }}>
+			<Box w={{ base: "100vw", md: "100%", lg: "40%" }} h={{ base: "50%", lg: "100%" }} className="box-background">
 				{/* <div className="background-pattern" style={{ width: "100%", height: "100%" }}></div> */}
 				{/* divider={<StackDivider borderColor='gray.200' /> }  */}
 				<VStack w="full" h="full" className="background-pattern" spacing={4} align="stretch" justify="space-between" p={8}>
-					<Heading color="white">Kirbank</Heading>
-					{/* <VStack align='start' mr={2}>
-							<Heading color='white'>Kirbank NFT</Heading>
-							<Text color='white' fontSize={{base: "md", md:'lg'}}>
-								Join us and become part of the excitement of creating a unique and valuable NFT!
-							</Text>
-						</VStack> */}
-					<Text color="white" as="b">
-						1 KBTK = $1.24
-					</Text>
+					<Heading color="white">Kirbank NFT</Heading>
+					<VStack align="center" mr={2} textAlign='center' spacing={6}>
+						<Heading color="white" size={{base: '2xl', md:'3xl'}}>
+							
+							<Image boxSize='500px'							
+    objectFit='cover'
+    src='./images/Logotipo Kirbank blanco.svg'
+    alt='Kirabank'/>
+						</Heading>
+						{/* CALCULADORA */}
+						<Card direction="row" overflow="hidden" variant="elevated" mb="5" onClick={() => router.push("/calculator")}>
+							<CardBody px={{base: "4", md:"5"}} py={{base: "3", md:"4"}} display="flex" flexDir="row" alignItems="center" justifyContent="start">
+								<CalculatorIcon w={ "25px"} h={"25px" } fill="gray.400" />
+								<Text pl="4" color="gray.600">
+									Make your investment calculations in real time
+								</Text>
+							</CardBody>
+						</Card>
+					</VStack>
+					<Box></Box>
 				</VStack>
 			</Box>
-			<VStack w="full" h={{ base: "auto", lg: "full" }} align="flex-start" justify={{ base: "start", lg: "center" }} px={10} py={5} spacing={6}>
+			<VStack w={{ base: "100vw", md: "100%", lg: "60%" }} h={{ base: "auto", lg: "full" }} align="flex-start" justify={{ base: "start", lg: "center" }} px={{base: 10, md:20}} py={5} spacing={6}>
 				{/* <Center w='75px' h='75px' bg='yellow.200' borderRadius='full' ></Center> */}
-				<Flex direction="column">
-					<Heading>NFT Collection</Heading>
-					<Text fontSize={{ base: "sm", md: "md" }} maxW="5xl" color="gray.500">
+				<Flex direction="column" textAlign={{base: "start", md:'center'}} >
+					<Heading size={{base: "xl", md:'2xl'}}>NFT Collection</Heading>
+					<Text fontSize={{ base: "md", md: "lg" }} maxW="5xl" color="gray.500" mt={{base:"4", md: "8"}}>
 						Join us and become part of the excitement of creating a unique and valuable NFT! We mint an NFT with an exclusive design and an opportunity to generate recurring
 						income. Dont miss this opportunity to own a unique and valuable digital asset! Secure your NFT now!
 					</Text>
@@ -159,21 +170,13 @@ const LoginIndex = () => {
 						{/* CARD #2 */}
 						<Card direction="row" overflow="hidden" variant="elevated" w="full" maxW="4xl" mb="5" onClick={() => setStateModal(true)}>
 							<CardBody px="4" py="3" display="flex" flexDir="row" alignItems="center" justifyContent="start">
-								<PersonalIcon w={{ base: "20px", lg: "25px" }} h={{ base: "20px", lg: "25px" }} fill="gray.300" />
+								<PersonalIcon w={{ base: "20px", lg: "25px" }} h={{ base: "20px", lg: "25px" }} fill="gray.400" />
 								<Text pl="4" color="gray.600">
 									Connect your account
 								</Text>
 							</CardBody>
 						</Card>
-						{/* CARD #3 */}
-						<Card direction="row" overflow="hidden" variant="elevated" w="full" maxW="4xl" mb="5" onClick={() => router.push("/calculator")}>
-							<CardBody px="4" py="3" display="flex" flexDir="row" alignItems="center" justifyContent="start">
-								<CalculatorIcon w={{ base: "20px", lg: "25px" }} h={{ base: "20px", lg: "25px" }} fill="gray.300" />
-								<Text pl="4" color="gray.600">
-									Make your investment calculations in real time
-								</Text>
-							</CardBody>
-						</Card>
+						
 					</Flex>
 				</Flex>
 			</VStack>

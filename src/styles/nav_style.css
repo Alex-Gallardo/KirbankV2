@@ -1,0 +1,7 @@
+.image{
+    position: relative;
+    top:0;
+    background: transparent;
+    width: 100px;
+    height: 100px !important;
+}

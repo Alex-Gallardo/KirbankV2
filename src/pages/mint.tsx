@@ -541,7 +541,7 @@ export default function MintIndex() {
 								</Flex>
 								<Flex p="2" flex="1" align="center" justify="end">
 									<Text color="blue.900" as="b">
-										{calc.percent} %
+										{(calc.percent* 100)} %
 									</Text>
 								</Flex>
 							</Stack>
