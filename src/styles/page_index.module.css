@@ -1,0 +1,27 @@
+.container_mockups{
+    position: relative;
+    /* Gradient #1 */
+    /* background: rgb(0,146,69);
+    background: linear-gradient(42deg, rgba(0,146,69,1) 0%, rgba(252,238,33,1) 100%); */
+    /* Gradient #2 */
+    background: rgb(10,130,112);
+    background: linear-gradient(42deg, rgba(10,130,112,1) 0%, rgba(124,255,107,1) 100%);
+}
+.img_mockup{
+    position: absolute;
+    height: 500px;
+    width: 300px;
+    top: -150px;
+    object-fit: cover !important;;
+}
+
+.container_footer_box{
+    position: absolute;
+    top: -100px;
+    /* Gradient #1 */
+    /* background: rgb(0,146,69);
+    background: linear-gradient(42deg, rgba(0,146,69,1) 0%, rgba(252,238,33,1) 100%); */
+    /* Gradient #2 */
+    background: rgb(10,130,112);
+    background: linear-gradient(42deg, rgba(10,130,112,1) 0%, rgba(124,255,107,1) 100%);
+}
