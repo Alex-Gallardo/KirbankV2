@@ -157,7 +157,7 @@ const LoginIndex = () => {
 				<Flex direction="column" textAlign={{ base: "start", md: "center" }}>
 					<Flex direction='row' textAlign={{ base: "start", md: "center" }} justify={{base: 'start', md: 'center'}} align="center">
 						<Heading size={{ base: "xl", md: "2xl" }}>Collection</Heading>
-						<Image h={{ base: "30px", md: "60px"}} w={{ base: "30px", md: "60px"}} ml='20px' src="./images/png/nft-icon.png"/>
+						<Image h={{ base: "30px", md: "60px"}} w={{ base: "30px", md: "60px"}} ml='20px' src="./images/png/nft-icon.png" alt='Kirbank Icon'/>
 					</Flex>
 					<Text fontSize={{ base: "md", md: "lg" }} maxW="5xl" color="gray.500" mt={{ base: "4", md: "8" }}>
 						Join us and become part of the excitement of creating a unique and valuable NFT! We mint an NFT with an exclusive design and an opportunity to generate recurring

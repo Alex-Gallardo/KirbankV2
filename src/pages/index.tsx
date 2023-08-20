@@ -4,7 +4,6 @@ import {
 	Button,
 	Card,
 	CardBody,
-	CardFooter,
 	Divider,
 	Flex,
 	FormControl,
@@ -19,14 +18,6 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
-	Popover,
-	PopoverArrow,
-	PopoverBody,
-	PopoverCloseButton,
-	PopoverContent,
-	PopoverFooter,
-	PopoverHeader,
-	PopoverTrigger,
 	Spacer,
 	Stack,
 	Tag,
@@ -48,7 +39,6 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Index() {
 	// ESTADOS
-	const [tokens, setTokens] = useState<TokenSchema[]>([]);
 
 	// MODAL
 	const [isModal, setOptModal] = useState(false);
@@ -144,8 +134,8 @@ export default function Index() {
 						<Text>Happy users</Text>
 					</Flex>
 					<Flex direction='row' justify='space-between' rounded='2xl' h='250px' maxW='600px' className={Styles.container_mockups}>
-						<img src="./images/png/device-2.png" className={Styles.img_mockup}  />
-						<img src="./images/png/device-3.png" className={Styles.img_mockup} style={{right:'0'}} />
+						<Image src="./images/png/device-2.png" className={Styles.img_mockup} alt='Kirbank Mockup' />
+						<Image src="./images/png/device-3.png" className={Styles.img_mockup} alt='Kirbank Mockup' style={{right:'0'}} />
 					</Flex>
 				</Stack>
 			</Stack>

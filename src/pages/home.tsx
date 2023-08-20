@@ -216,7 +216,8 @@ export default function Home() {
 	useEffect(()=>{
 		orderData(nfts)
 		setTokens(nfts)
-	},[])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	},[nfts])
 
 	// Activa el modal
 	const activeModal = (token: any) => {

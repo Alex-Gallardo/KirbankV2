@@ -11,7 +11,7 @@ export default function Footer() {
 
 	// CONTEXT
 	const userContext = useContext(UserContext);
-	const { user, red, actualizarRed } = userContext;
+	const { user, red, upRed } = userContext;
 
 	// Evalua las circustancias de la red
 	const checkRedIsRunning = useCallback(() => {
@@ -52,7 +52,7 @@ export default function Footer() {
 			ethereum.on("chainChanged", (networkID: any) => {
 				console.log("NetworkEthereum", networkID, parseInt(networkID));
 				if (parseInt(networkID) == 5) {
-					actualizarRed(true);
+					upRed(true);
 					toast({
 						title: "Cambio a red correcta! Home",
 						status: "success",
@@ -61,7 +61,7 @@ export default function Footer() {
 						position: "bottom-right"
 					});
 				} else {
-					actualizarRed(false);
+					upRed(false);
 					toast({
 						title: "Cambio a red incorrecta! Home",
 						status: "warning",
@@ -72,7 +72,7 @@ export default function Footer() {
 				}
 			});
 		}
-	},[ actualizarRed, toast]);
+	},[ upRed, toast]);
 
 	useEffect(() => {
 		checkRedIsRunning()
