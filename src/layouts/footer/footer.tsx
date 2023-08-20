@@ -4,7 +4,7 @@ import { Box, Container,  Flex, Spacer,  Text, useToast } from "@chakra-ui/react
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useCallback, useContext, useEffect } from "react";
 
-import UserContext from "@/context/UserContext";
+import UserContext from "@/context/UserContext/UserContext";
 
 export default function Footer() {
 	const toast = useToast();

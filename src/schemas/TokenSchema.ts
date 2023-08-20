@@ -15,7 +15,9 @@ export interface TokenSchema {
 	// Fecha de creacion
 	dateCreate: number;
 	// Estado del token
+	verified: boolean;
 	applicationStatus: string;
+	voucherURL?: string
 	// dataURI del ERC-721
 	dataUri?: string;
 	// A que coleccion de nft pertenece

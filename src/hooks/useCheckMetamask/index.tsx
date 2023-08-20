@@ -1,4 +1,4 @@
-import UserContext from "@/context/UserContext";
+import UserContext from "@/context/UserContext/UserContext";
 import { useCallback, useContext, useMemo } from "react";
 import { ethers } from "ethers";
 import { useToast } from "@chakra-ui/react";

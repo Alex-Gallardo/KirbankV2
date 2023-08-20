@@ -6,9 +6,9 @@ import { ChakraProvider, useToast } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect } from "react";
 
 import type { AppProps } from "next/app";
-import UserContext from "@/context/UserContext";
+import UserContext from "@/context/UserContext/UserContext";
 // CONTEXT
-import UserState from "@/context/UserState";
+import UserState from "@/context/UserContext/UserState";
 import { useRouter } from "next/router";
 
 // WEB3
@@ -21,7 +21,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
 	// CONTEXT
 	const userContext = useContext(UserContext);
-	const { user, agregarUsuario, actualizarRed } = userContext;
+	const { user, upUser, upRed } = userContext;
 
 	// Valida que el browser tenga instalado Metamask
 	const checkIfMetamaskIsConnected = async () => {
@@ -99,14 +99,14 @@ export default function App({ Component, pageProps }: AppProps) {
 	};
 
 	// Valida que existe un usuario
-	const checkUser = () => {
-		const { user } = userContext;
-		if (user == null || user == undefined) router.push("/login");
-	};
+	// const checkUser = () => {
+	// 	const { user } = userContext;
+	// 	if (user == null || user == undefined) router.push("/login");
+	// };
 
 	useEffect(() => {
+		// checkUser();
 		checkIfMetamaskIsConnected();
-		checkUser();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

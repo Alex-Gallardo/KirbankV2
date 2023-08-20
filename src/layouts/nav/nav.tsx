@@ -61,16 +61,18 @@ export default function Nav({ children }: any) {
 						{/* ENCABEZADOS */}
 						{/* <Heading display={{ base: "none", lg: "flex" }} onClick={()=>router.push('/all')} color='gray.700'>Kirbank</Heading> */}
 						<Image boxSize='500px'
-						className='image'
-    objectFit='cover'
-	display={{ base: "none", lg: "flex" }}
-    src='./images/Logotipo Kirbank negro.svg'
-    alt='Kirabank'/>
+							className='image'
+							objectFit='cover'
+							display={{ base: "none", lg: "flex" }}
+							src='./images/Logotipo Kirbank negro.svg'
+							alt='Kirbank Logo'
+							onClick={()=> router.replace('/all')}
+							/>
 						<Heading display={{ base: "flex", lg: "none" }}>K</Heading>
 						{/* RUTAS */}
 						<Stack spacing={8} display={{ base: "none", lg: "flex" }} alignItems="start">
 							<Button colorScheme="gray.500" variant="link" leftIcon={<HomeIcon />} fontSize='xl'>
-								<Link style={{marginLeft: '0.5em'}} href="/">Home</Link>
+								<Link style={{marginLeft: '0.5em'}} href="/home">Home</Link>
 							</Button>
 							<Button colorScheme="gray.500" variant="link" leftIcon={<CalculatorIcon />} fontSize='xl'>
 								<Link style={{marginLeft: '0.5em'}} href="/calculator">Calculator</Link>
@@ -111,7 +113,7 @@ export default function Nav({ children }: any) {
 
 								<DrawerBody gap={7} display="flex" flexDirection="column" alignItems="start" pt="20">
 									<Button colorScheme="gray.500" variant="link" leftIcon={<HomeIcon />}>
-										<Link href="/">Home</Link>
+										<Link href="/home">Home</Link>
 									</Button>
 									<Button colorScheme="gray.500" variant="link" leftIcon={<CalculatorIcon />}>
 										<Link href="/calculator">Calculator</Link>
@@ -139,7 +141,7 @@ export default function Nav({ children }: any) {
 					{/* Contenido */}
 					<Flex h="100vh" w={{ base: "100%", lg: "80%" }} flexDirection="column" justify="space-between">
 						<Header />
-						<Flex w="full" h="full" px={{ base: 6, md: 8, lg: 10 }} overflowY={{base:'auto',lg:'scroll'}} >
+						<Flex w="full" h="full" px={{ base: 6, md: 10, lg: '100px' }} overflowY={{base:'auto',lg:'scroll'}} >
 							{children}
 						</Flex>
 						<Footer />

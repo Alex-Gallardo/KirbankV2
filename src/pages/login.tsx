@@ -3,7 +3,6 @@ import {
 	Button,
 	Card,
 	CardBody,
-	Center,
 	Flex,
 	FormControl,
 	FormLabel,
@@ -18,7 +17,6 @@ import {
 	ModalHeader,
 	ModalOverlay,
 	Stack,
-	StackDivider,
 	Text,
 	VStack,
 	useToast
@@ -28,10 +26,11 @@ import { useContext, useRef, useState } from "react";
 import CalculatorIcon from "@/icons/calculator";
 import Link from "next/link";
 import PersonalIcon from "@/icons/personal";
-import UserContext from "@/context/UserContext";
+import UserContext from "@/context/UserContext/UserContext";
 import { ethers } from "ethers";
 import { googleLogin } from "@/utils/firebase/Auth";
 import { useRouter } from "next/router";
+import { getDataFromCollection, getFromCollection } from "@/utils/firebase/DB";
 
 const LoginIndex = () => {
 	// STATE
@@ -41,7 +40,7 @@ const LoginIndex = () => {
 
 	// CONTEXT
 	const userContext = useContext(UserContext);
-	const { user, agregarUsuario, actualizarRed } = userContext;
+	const { user, upUser, upNFT, upWallet, upRed } = userContext;
 
 	const initialRef = useRef(null);
 	const finalRef = useRef(null);
@@ -68,7 +67,7 @@ const LoginIndex = () => {
 			const provider = new ethers.providers.Web3Provider(ethereum);
 			// const signer = provider.getSigner();
 			// console.log("- Signer", accounts);
-			agregarUsuario(accounts[0]);
+			upWallet(accounts[0]);
 			// let addressWallet: string = `${accounts[0]?.substr(0, 6)}...${accounts[0]?.substr(-4)}`;
 			// setText(accounts[0]);
 			// setText(addressWallet);
@@ -77,13 +76,13 @@ const LoginIndex = () => {
 			// Establecimiento de red
 			// RED ESTABLECIDA
 			if (ethereum.networkVersion == 5) {
-				actualizarRed(true);
+				upRed(true);
 			} else {
-				actualizarRed(false);
+				upRed(false);
 			}
 
 			// Redirect to
-			router.push("/");
+			router.push("/home");
 		} catch (err: any) {
 			toast({
 				title: "Ha ocurrido un error de conexion con Metamask",
@@ -102,8 +101,14 @@ const LoginIndex = () => {
 	const singInGoogle = async () => {
 		let res = await googleLogin();
 		if (res != undefined) {
-			agregarUsuario(res.user);
-			router.push("/");
+			// Obtenemos/actualizamos el usuario
+			let user = await getFromCollection(res.user.uid, 'users')
+			upUser(user);
+			// Obtenemos/actualizamos los tokens
+			let tokens = await getDataFromCollection('tokens', 'owner', "==", res.user.uid)
+			upNFT(tokens)
+			// Si todo esta OK, redireccionamos
+			router.push("/home");
 		}
 		console.log("Obtenemos login:", res);
 	};
@@ -119,21 +124,19 @@ const LoginIndex = () => {
 				{/* <div className="background-pattern" style={{ width: "100%", height: "100%" }}></div> */}
 				{/* divider={<StackDivider borderColor='gray.200' /> }  */}
 				<VStack w="full" h="full" className="background-pattern" spacing={4} align="stretch" justify="space-between" p={8}>
-					<Heading color="white">Kirbank NFT</Heading>
-					<VStack align="center" mr={2} textAlign='center' spacing={6}>
-						<Heading color="white" size={{base: '2xl', md:'3xl'}}>
-							
-							<Image boxSize='500px'							
-    objectFit='cover'
-    src='./images/Logotipo Kirbank blanco.svg'
-    alt='Kirabank'/>
+					<Heading color="white"></Heading>
+					<VStack align="center" mr={2} textAlign="center" spacing={6}>
+						<Heading color="white" size={{ base: "2xl", md: "3xl" }}>
+							<Image boxSize="500px" objectFit="cover" src="./images/Logotipo Kirbank blanco.svg" alt="Kirabank" 
+									h={{ base: "200px", lg: "200px" }}
+									/>
 						</Heading>
 						{/* CALCULADORA */}
 						<Card direction="row" overflow="hidden" variant="elevated" mb="5" onClick={() => router.push("/calculator")}>
-							<CardBody px={{base: "4", md:"5"}} py={{base: "3", md:"4"}} display="flex" flexDir="row" alignItems="center" justifyContent="start">
-								<CalculatorIcon w={ "25px"} h={"25px" } fill="gray.400" />
-								<Text pl="4" color="gray.600">
-									Make your investment calculations in real time
+							<CardBody px={{ base: "4", md: "5" }} py={{ base: "3", md: "4" }} display="flex" flexDir="row" alignItems="center" justifyContent="start">
+								<CalculatorIcon w={"25px"} h={"25px"} fill="gray.400" />
+								<Text pl="4" color="gray.600" textAlign='start'>
+									Perform investment calculations instantly
 								</Text>
 							</CardBody>
 						</Card>
@@ -141,11 +144,22 @@ const LoginIndex = () => {
 					<Box></Box>
 				</VStack>
 			</Box>
-			<VStack w={{ base: "100vw", md: "100%", lg: "60%" }} h={{ base: "auto", lg: "full" }} align="flex-start" justify={{ base: "start", lg: "center" }} px={{base: 10, md:20}} py={5} spacing={6}>
+			<VStack
+				w={{ base: "100vw", md: "100%", lg: "60%" }}
+				h={{ base: "auto", lg: "full" }}
+				align="flex-start"
+				justify={{ base: "start", lg: "center" }}
+				px={{ base: 10, md: 20 }}
+				py={5}
+				spacing={6}
+			>
 				{/* <Center w='75px' h='75px' bg='yellow.200' borderRadius='full' ></Center> */}
-				<Flex direction="column" textAlign={{base: "start", md:'center'}} >
-					<Heading size={{base: "xl", md:'2xl'}}>NFT Collection</Heading>
-					<Text fontSize={{ base: "md", md: "lg" }} maxW="5xl" color="gray.500" mt={{base:"4", md: "8"}}>
+				<Flex direction="column" textAlign={{ base: "start", md: "center" }}>
+					<Flex direction='row' textAlign={{ base: "start", md: "center" }} justify={{base: 'start', md: 'center'}} align="center">
+						<Heading size={{ base: "xl", md: "2xl" }}>Collection</Heading>
+						<Image h={{ base: "30px", md: "60px"}} w={{ base: "30px", md: "60px"}} ml='20px' src="./images/png/nft-icon.png"/>
+					</Flex>
+					<Text fontSize={{ base: "md", md: "lg" }} maxW="5xl" color="gray.500" mt={{ base: "4", md: "8" }}>
 						Join us and become part of the excitement of creating a unique and valuable NFT! We mint an NFT with an exclusive design and an opportunity to generate recurring
 						income. Dont miss this opportunity to own a unique and valuable digital asset! Secure your NFT now!
 					</Text>
@@ -168,15 +182,14 @@ const LoginIndex = () => {
 							</CardBody>
 						</Card>
 						{/* CARD #2 */}
-						<Card direction="row" overflow="hidden" variant="elevated" w="full" maxW="4xl" mb="5" onClick={() => setStateModal(true)}>
+						{/* <Card direction="row" overflow="hidden" variant="elevated" w="full" maxW="4xl" mb="5" onClick={() => setStateModal(true)}>
 							<CardBody px="4" py="3" display="flex" flexDir="row" alignItems="center" justifyContent="start">
-								<PersonalIcon w={{ base: "20px", lg: "25px" }} h={{ base: "20px", lg: "25px" }} fill="gray.400" />
+								<PersonalIcon w= { { base: "20px", lg: "25px" }} h= { { base: "20px", lg: "25px" }} fill="gray.400" />
 								<Text pl="4" color="gray.600">
 									Connect your account
 								</Text>
 							</CardBody>
-						</Card>
-						
+						</Card> */}
 					</Flex>
 				</Flex>
 			</VStack>

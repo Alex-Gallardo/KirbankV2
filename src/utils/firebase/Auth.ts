@@ -19,16 +19,21 @@ import { UserSchema } from "@/schemas/UserSchema";
 // let FacebookProvider = new FacebookAuthProvider();
 let GoogleProvider = new GoogleAuthProvider();
 
+// Obtener authentication
 const getAuthUser = async () => {
 	return getAuth(firebaseApp);
 };
 
+// =================================================================================================================
+// ========================================== REGISTO EMAIL/PASSWORD ===============================================
+// Registrar usuario nuevo
 export const register = async (email: string, pass: string, name: string, last_name: string) => {
 	return createUserWithEmailAndPassword(await getAuthUser(), email, pass).then((res: UserCredential) => {
 		if (getAdditionalUserInfo(res)?.isNewUser) saveUser(res, name, last_name);
 	});
 };
 
+// Login de email y contraseña
 export const login = async (email: string, pass: string) => {
 	return signInWithEmailAndPassword(await getAuthUser(), email, pass).catch((err) => {
 		window.alert({
@@ -41,6 +46,7 @@ export const login = async (email: string, pass: string) => {
 		});
 	});
 };
+// =================================================================================================================
 
 // export const facebookLogin = async () => {
 // 	const auth = await getAuthUser();
@@ -70,11 +76,15 @@ export const googleLogin = async () => {
 
 export const logout = async () => {
 	const auth = await getAuthUser();
-	window.postMessage({
-		action: "logout"
-	});
+	// Cambiar a toast
+	// window.postMessage({
+	// 	action: "logout"
+	// });
 	return auth.signOut();
 };
+
+// =================================================================================================================
+// ============================================= BASE DE DATOS =====================================================
 
 // **ANALIZAR
 // export const userListener = async (callback: (user: UserFB) => unknown) => {
@@ -102,3 +112,5 @@ export const saveUser = async (cred: UserCredential, name?: string, last_name?: 
 	};
 	saveInCollection<any>(tmpUser, uid, "users");
 };
+
+

@@ -41,7 +41,7 @@ import { useRouter } from "next/router";
 export default function CalculatorIndex() {
 	// ESTADOS
 	const [priceAct, setPriceAct] = useState(0);
-	const [coin, setCoin] = useState("ETH");
+	const [coin, setCoin] = useState("TSS");
 	const [methodBuy, setMethodBuy] = useState<boolean>(true);
 	const [isModal, setOptModal] = useState<boolean>(false);
 	const [price, setPrice] = useState<{ ethereum: number; bitcoin: number }>({ ethereum: 0, bitcoin: 0 });
@@ -136,18 +136,19 @@ export default function CalculatorIndex() {
 	const handleChangeSelect = (event: any) => {
 		const val = event.target.value;
 		switch (val) {
-			case "transfer":
+			case "TSS":
 				setMethodBuy(true);
-				localStorage.setItem("coin", "TRANSFER");
+				setCoin("TSS");
+				localStorage.setItem("coin", "TSS");
 				break;
-			case "ethereum":
+			case "ETH":
 				//@ts-ignore
 				setPriceAct(price.ethereum.usd);
 				setCoin("ETH");
 				localStorage.setItem("coin", "ETH");
 				setMethodBuy(false);
 				break;
-			case "bitcoin":
+			case "BTC":
 				//@ts-ignore
 				setPriceAct(price.bitcoin.usd);
 				setCoin("BTC");
@@ -164,6 +165,7 @@ export default function CalculatorIndex() {
 	};
 
 	useEffect(() => {
+		console.log('carga de tables')
 		computeTableValues();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [calc.ammount, calc.year]);
@@ -184,6 +186,12 @@ export default function CalculatorIndex() {
 
 	// Go mint
 	function goMint(){
+
+		localStorage.setItem("ammount", calc.ammount.toString());
+		localStorage.setItem("year", calc.year.toString());
+		localStorage.setItem("coin", coin);
+
+		router.push("/mint")
 		
 	}
 
@@ -194,11 +202,29 @@ export default function CalculatorIndex() {
 		});
 	}, []);
 
+	// Obtener datos de localStorage
+	useEffect(() => {
+		// getAllTokens();
+
+		let a = localStorage.getItem("ammount");
+		let y = localStorage.getItem("year");
+		let c = localStorage.getItem("coin");
+		// Si hay 'ammount' y 'year'
+		if (a && y) {
+			setCalc({ ...calc, ammount: parseInt(a, 10), year: parseInt(y, 10) })
+			console.log('\nlocalStorage Obtenido:', coin, calc, a, y, c)
+			// computeTableValues()
+		};
+		// Si hay 'coin'
+		if (c) setCoin(c);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<Nav>
 			{/* <main className={styles.main}> */}
 			<Box minWidth="full" maxWidth="container.xl" h="max-content" mt={12}>
-				<Flex flexDirection="column" align="cstart" justify="start">
+				<Flex flexDirection="column" align="start" justify="start">
 					<Box>
 						<Heading>Kirbank Calculator</Heading>
 						<Text>This calculator is easy to use and will give you accurate results in seconds. Simply enter the amount of money you want to invest and the number of years</Text>
@@ -221,19 +247,19 @@ export default function CalculatorIndex() {
 								<InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em">
 									$
 								</InputLeftElement>
-								<Input placeholder="Enter amount" type="number" onChange={(e) => handleChange(e, "ammount")} />
+								<Input placeholder="Enter amount" type="number" value={calc.ammount == 0?'':calc.ammount} onChange={(e) => handleChange(e, "ammount")} />
 								{/* <InputRightElement children={<CheckIcon color="green.500" />} /> */}
 							</InputGroup>
 							<HStack divider={<StackDivider borderColor="gray.400" />} spacing={0} align="center" w="full" overflow="hidden">
-								<Select defaultValue="eth" pr="2" color="gray.500" onChange={(e) => handleChangeSelect(e)} flex="3">
-									<option value="transfer">Wire transfer</option>
-									<option value="ethereum">Ethereum</option>
-									<option value="bitcoin">Bitcoin</option>
+								<Select value={coin} pr="2" color="gray.500" onChange={(e) => handleChangeSelect(e)} flex="3">
+									<option value="TSS">Wire transfer</option>
+									<option value="ETH">Ethereum</option>
+									<option value="BTC">Bitcoin</option>
 									{/* <option value='matic'>Polygon</option> */}
 								</Select>
 								<Flex p="2" flex="2" align="center" justify="center">
-									<Text color="white" as="b" bg={coin == "ETH" ? "blue.600" : "yellow.500"} py="1" px="2" borderRadius="4">
-										{methodBuy ? "TRANSFER" : `1 ${coin} = ${priceAct} USD`}
+									<Text color="white" as="b" bg={coin == "ETH" || coin == "TSS" ? "blue.600" : "yellow.500"} py="1" px="2" borderRadius="4">
+										{coin == "TSS" ? "TRANSFER" : `1 ${coin} = ${priceAct} USD`}
 									</Text>
 								</Flex>
 							</HStack>
@@ -244,7 +270,7 @@ export default function CalculatorIndex() {
 								<Text mr={5} as="b" color="blue.900">
 									Years:
 								</Text>
-								<NumberInput defaultValue={1} max={20} min={1} onChange={(e) => handleChange(e, "year")}>
+								<NumberInput value={calc.year} max={20} min={1} onChange={(e) => handleChange(e, "year")}>
 									<NumberInputField />
 									<NumberInputStepper>
 										<NumberIncrementStepper />
@@ -343,7 +369,7 @@ export default function CalculatorIndex() {
 					</ModalBody>
 
 					<ModalFooter>
-						<Button colorScheme="blue" mr={3} onClick={() => router.push("/mint")}>
+						<Button colorScheme="blue" mr={3} onClick={() => goMint()}>
 							Go mint
 						</Button>
 						<Button onClick={() => setOptModal(false)}>Cancel</Button>

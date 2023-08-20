@@ -14,6 +14,7 @@ import {
 	onSnapshot,
 	query,
 	setDoc,
+	updateDoc,
 	where
 } from "firebase/firestore";
 
@@ -46,7 +47,7 @@ export const saveInCollection = async <T>(data: PartialWithFieldValue<T>, dataId
 	return setDoc(colDoc, data, { merge });
 };
 
-// OBTENER
+// OBTENER DOCUMENTO
 export const getFromCollection = async <T>(dataId: string, colName: string) => {
 	const collection = await getCollection(colName);
 	const colDoc = doc(collection, dataId);
@@ -82,6 +83,13 @@ export const getListener = async <T>(
 	const collection = await getCollection(colName);
 	const colDoc: any = doc(collection, dataId);
 	return onSnapshot(colDoc, onNext, onError, onCompletion);
+};
+
+// ACTUALIZAR DOCUMENTO
+export const upDataFromCollection = async <T>(data: PartialWithFieldValue<T>, dataId: string, colName: string) => {
+	const collection = await getCollection(colName);
+	const colDoc = doc(collection, dataId) as DocumentReference<T>;
+	return updateDoc(colDoc, data as any);
 };
 
 // ELIMINAR

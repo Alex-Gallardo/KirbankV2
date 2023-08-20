@@ -1,27 +1,30 @@
 import { Button, Icon, Text, useToast } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import UserContext from "@/context/UserContext";
+import UserContext from "@/context/UserContext/UserContext";
 import WalletIcon from "@/icons/wallet";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
-import useTruncatedAddress from '@/hooks/useTruncatedAddress';
+import useTruncatedAddress from "@/hooks/useTruncatedAddress";
 
 const WalletButton = ({ ...props }: any) => {
 	// STATE
 	const [text, setText] = useState(" ");
 	const router = useRouter();
 	const toast = useToast();
-	
+
 	// CONTEXT
 	const userContext = useContext(UserContext);
-	const { user, agregarUsuario, actualizarRed } = userContext;
-	let dirWallet = useTruncatedAddress('')
+	const { wallet, upRed, upWallet } = userContext;
+	let dirWallet = useTruncatedAddress("");
 
 	// console.log("primera carga wallet", usuario)
-	useEffect(()=>{
-		if(user) setText(dirWallet)
-	},[user, dirWallet])
+	useEffect(() => {
+		if (wallet) {
+			let addressWallet: string = `${wallet.substr(0, 6)}...${wallet.substr(-4)}`;
+			setText(addressWallet);
+		}
+	}, [wallet]);
 
 	// Funcion para conectar Metamask
 	const connectMetamask = async () => {
@@ -45,22 +48,19 @@ const WalletButton = ({ ...props }: any) => {
 			const provider = new ethers.providers.Web3Provider(ethereum);
 			// const signer = provider.getSigner();
 			// console.log("Signer", signer);
-			agregarUsuario(accounts[0]);
-			// let addressWallet: string = `${accounts[0]?.substr(0, 6)}...${accounts[0]?.substr(-4)}`;
-			// setText(accounts[0]);
-			// setText(addressWallet);
-			// console.log("Account -wallet", addressWallet);
+			upWallet(accounts[0]);
+			let addressWallet: string = `${accounts[0]?.substr(0, 6)}...${accounts[0]?.substr(-4)}`;
+			setText(addressWallet);
 
 			// Establecimiento de red
-			// RED ESTABLECIDA
 			if (ethereum.networkVersion == 5) {
-				actualizarRed(true);
+				upRed(true);
 			} else {
-				actualizarRed(false);
+				upRed(false);
 			}
 
 			// Redirect to
-			if (router.pathname == "/login") router.push("/");
+			if (router.pathname == "/login") router.push("/home");
 		} catch (err: any) {
 			console.error("Ha ocurrido un error", err);
 			toast({
@@ -76,9 +76,9 @@ const WalletButton = ({ ...props }: any) => {
 	};
 
 	return (
-		<Button leftIcon={<WalletIcon/>} onClick={connectMetamask} background={text===" "?"#EDF2F7":"#DBF227"} {...props}>
+		<Button leftIcon={<WalletIcon />} onClick={connectMetamask} background={text === " " ? "#EDF2F7" : "#DBF227"} {...props}>
 			<Text noOfLines={1} fontSize={{ base: "sm", lg: "md" }}>
-				{text===" "?"Conecta tu wallet": text}
+				{text === " " ? "Conecta tu wallet" : text}
 			</Text>
 		</Button>
 	);
